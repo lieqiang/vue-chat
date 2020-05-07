@@ -8,9 +8,10 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   // console.log('connection !!')
-  socket.emit('test', 'dddfdd')
+  // socket.emit('test', 'dddfdd')
   socket.on('otherevent', (data) => {
     console.log(data)
+    socket.emit('test', { a: 'from server' })
   })
 })
 

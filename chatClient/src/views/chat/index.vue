@@ -6,7 +6,7 @@
         path="/questions/my-questions"
         name="更多"
       >
-        <span class="question-tit">李曾</span>
+        <span class="question-tit" @click="emitEvent">李曾</span>
         <span class="question-sts">在线</span>
       </nav-bar>
       <div :style="{ height: height + 'px' }" class="chat-container" @click="slideup">
@@ -183,15 +183,13 @@ export default {
 
   },
   mounted() {
-    this.$socket.emit('otherevent', 'otherevent')
-    // console.log(this.$socket)
     this.$nextTick(() => {
       this.calculateHeight()
     })
   },
   sockets: {
-    test() {
-      console.log('abcddd')
+    test(data) {
+      console.log(data)
     },
     // 这里是监听connect事件
     connect() {
@@ -205,6 +203,10 @@ export default {
     }
   },
   methods: {
+    emitEvent() {
+      console.log('click')
+      this.$socket.emit('otherevent', 'otherevent')
+    },
     iosResizeHandle() {
       const msgInputDom = document.querySelector('.msg-input')
       msgInputDom.addEventListener('blur', () => {
