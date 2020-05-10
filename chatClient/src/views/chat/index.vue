@@ -204,8 +204,7 @@ export default {
   },
   methods: {
     emitEvent() {
-      console.log('click')
-      this.$socket.emit('otherevent', 'otherevent')
+      this.$socket.emit('otherevent', 'from client')
     },
     iosResizeHandle() {
       const msgInputDom = document.querySelector('.msg-input')
