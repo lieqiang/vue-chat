@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <div id="nav">
+    <!-- <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/chat">chat</router-link>
-    </div>
+    </div> -->
     <router-view/>
   </div>
 </template>
@@ -17,7 +17,7 @@
   color: #2c3e50;
 }
 
-#nav {
+/* #nav {
   padding: 30px;
 }
 
@@ -28,5 +28,5 @@
 
 #nav a.router-link-exact-active {
   color: #42b983;
-}
+} */
 </style>

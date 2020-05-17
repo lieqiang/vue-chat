@@ -41,7 +41,7 @@ class LinValidator {
             if (value == null) {
                 const keys = path.split('.')
                 const key = last(keys)
-                return get(this.parsed.default, key)
+                return get(this.parsed.default, key) // set 里面的default
             }
             return value
         } else {
@@ -49,10 +49,15 @@ class LinValidator {
         }
     }
 
-    _findMembersFilter(key) {
-        if (/validate([A-Z])\w+/g.test(key)) {
+    _findMembersFilter(key) { // key util里面传的 name
+        if (/validate([A-Z])\w+/g.test(key)) {// 函数？
             return true
         }
+        // this.id = [
+        //   new Rule('isInt', 'id需要是正整数', {
+        //       min: 1
+        //   })
+        // ]
         if (this[key] instanceof Array) {
             this[key].forEach(value => {
                 const isRuleType = value instanceof Rule
@@ -65,20 +70,20 @@ class LinValidator {
         return false
     }
 
-    async validate(ctx, alias = {}) {
+    async validate(ctx, alias = {}) { // ctx 传进来的上下文
         this.alias = alias
-        let params = this._assembleAllParams(ctx)
+        let params = this._assembleAllParams(ctx) // 把 ctx.body ctx.query ctx.params cxt.request.header取到
         this.data = cloneDeep(params)
         this.parsed = cloneDeep(params)
-
-        const memberKeys = findMembers(this, {
-            filter: this._findMembersFilter.bind(this)
+        // 找到需要验证的key
+        const memberKeys = findMembers(this, { // this 下面 过滤掉不满足条件的属性或方法名，是一个数组
+            filter: this._findMembersFilter.bind(this) // 验证数组必须全部为Rule类型
         })
-
+        console.log('验证参数为 ', memberKeys)
         const errorMsgs = []
         // const map = new Map(memberKeys)
         for (let key of memberKeys) {
-            const result = await this._check(key, alias)
+            const result = await this._check(key, alias) // 返回验证结果
             if (!result.success) {
                 errorMsgs.push(result.msg)
             }
@@ -107,7 +112,7 @@ class LinValidator {
             const ruleField = new RuleField(rules)
             // 别名替换
             key = alias[key] ? alias[key] : key
-            const param = this._findParam(key)
+            const param = this._findParam(key) // 从 this.data 里面取传进来的参数，可能为空 { value: '', path: key }
 
             result = ruleField.validate(param.value)
 
@@ -171,7 +176,7 @@ class LinValidator {
 }
 
 class RuleResult {
-    constructor(pass, msg = '') {
+    constructor(pass, msg = '') { // pass 是否通过
         Object.assign(this, {
             pass,
             msg
@@ -195,7 +200,8 @@ class Rule {
         })
     }
 
-    validate(field) {
+    validate(field) { // 验证可选参数 和 参数的
+      // isOptional 可选参数
         if (this.name == 'isOptional')
             return new RuleResult(true)
         if (!validator[this.name](field + '', ...this.params)) {
@@ -222,11 +228,11 @@ class RuleField {
             }
         }
 
-        const filedResult = new RuleFieldResult(false)
+        const filedResult = new RuleFieldResult(false) // 重新设置为 false
         for (let rule of this.rules) {
-            let result = rule.validate(field)
+            let result = rule.validate(field) // 可选参数不验证是否传
             if (!result.pass) {
-                filedResult.msg = result.msg
+                filedResult.msg = result.msg // 设置class msg, legalValue
                 filedResult.legalValue = null
                 // 一旦一条校验规则不通过，则立即终止这个字段的验证
                 return filedResult

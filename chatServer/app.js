@@ -5,10 +5,20 @@ const app = new Koa()
 const server = require('http').Server(app.callback())
 global.server = server
 require('@core/socket')
+const parser = require('koa-bodyparser') // 获取body参数
 const InitManager = require('@core/init')
-InitManager.initCore(app)
+const catchError = require('@middlewares/exception')
+require('@models/user')
+app.use(catchError)
+app.use(parser())
 const static = require('koa-static')
 app.use(static(path.join(__dirname, './static')))
+InitManager.initCore(app)
+var cors = require('koa2-cors')
+app.use(cors())
 server.listen(8090, () => {
-  console.log('服务器在8090启动')
+  console.log('服务器在8090启动11')
 });
+// app.listen(8090, () => {
+//   console.log('服务器在8090启动22')
+// })

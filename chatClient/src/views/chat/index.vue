@@ -445,7 +445,7 @@ export default {
         align-items: center;
         justify-content: center;
         .mine-avatar {
-          background: url(../../assets/mine.png) no-repeat;
+          background: url(../../assets/mine.jpg) no-repeat;
           background-size: contain;
         }
       }
@@ -506,7 +506,7 @@ export default {
         align-items: center;
         justify-content: center;
         .user-avatar {
-          background: url(../../assets/user.png) no-repeat;
+          background: url(../../assets/user.jpg) no-repeat;
           background-size: cover;
         }
       }
