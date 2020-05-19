@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div class="chat">
+      <img src="@/assets/mine.jpg" alt="">
+    </div>
     <van-field
       v-model="username"
       name="用户名"
@@ -13,14 +16,7 @@
       label="密码"
       placeholder="请输入6-18位密码"
     />
-    <van-field
-      v-model="confirmPassword"
-      type="password"
-      name="确认密码"
-      label="确认密码"
-      placeholder="请再次输入密码"
-    />
-    <div class="submit">
+    <div class="sumit">
       <van-button round block type="info" @click="submit">
         提交
       </van-button>
@@ -31,7 +27,7 @@
 <script>
 import Vue from 'vue'
 import { Field, Button, Toast } from 'vant'
-import { signup } from '@/api/user'
+import { signin } from '@/api/user'
 Vue.use(Field).use(Button).use(Toast)
 export default {
   name: 'Home',
@@ -40,8 +36,7 @@ export default {
   data() {
     return {
       username: '',
-      password: '',
-      confirmPassword: ''
+      password: ''
     }
   },
   methods: {
@@ -52,14 +47,6 @@ export default {
       }
       if (!this.password) {
         Toast('请输入密码')
-        return false
-      }
-      if (!this.confirmPassword) {
-        Toast('请输入确认密码')
-        return false
-      }
-      if (this.password !== this.confirmPassword) {
-        Toast('两次输入密码不一致')
         return false
       }
       return true
@@ -73,8 +60,11 @@ export default {
         username: this.username,
         password: this.password
       }
-      signup(params).then((res) => {
+      signin(params).then((res) => {
         console.log(res)
+        if (res.data.code && res.data.code !== 0) {
+          Toast(res.data.message)
+        }
       }).catch((err) => {
         console.log(err)
       })
@@ -83,6 +73,15 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .chat {
+    text-align: center;
+    padding: 40px 20px 20px 20px;
+    img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+    }
+  }
   .sumit {
     padding-top: 30px;
     max-width: 90%;

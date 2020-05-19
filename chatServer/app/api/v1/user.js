@@ -17,14 +17,25 @@ router.post('signup', async (ctx) => {
   const r = await User.signup(user)
   console.log('res', r)
   ctx.body = r
-  // throw new Success()
 })
 
-router.get('test', async (ctx) => {
-  ctx.body = {
-    test: 1,
-    success: true
+router.post('signin', async (ctx) => {
+  const v = await new RegisterValidator().validate(ctx)
+  const user = {
+    username: v.get('body.username'), // body
+    password: v.get('body.password')
   }
-  // throw new Success()
+  console.log('userParams', user)
+  const r = await User.signin(user)
+  console.log('res', r)
+  ctx.body = r
 })
+
+// router.get('test', async (ctx) => {
+//   ctx.body = {
+//     test: 1,
+//     success: true
+//   }
+//   // throw new Success()
+// })
 module.exports = router

@@ -10,9 +10,10 @@ export function signup(query) {
   })
 }
 
-export function test(query) {
+export function signin(query) {
   return request({
-    url: '/v1/user/test',
-    method: 'get'
+    url: '/v1/user/signin',
+    method: 'post',
+    data: qs.stringify(query)
   })
 }
