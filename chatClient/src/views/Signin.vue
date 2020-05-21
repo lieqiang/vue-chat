@@ -18,7 +18,7 @@
     />
     <div class="sumit">
       <van-button round block type="info" @click="submit">
-        提交
+        登录
       </van-button>
     </div>
   </div>
@@ -27,7 +27,7 @@
 <script>
 import Vue from 'vue'
 import { Field, Button, Toast } from 'vant'
-import { signin } from '@/api/user'
+import { signin, getUserInfo } from '@/api/user'
 Vue.use(Field).use(Button).use(Toast)
 export default {
   name: 'Home',
@@ -51,7 +51,7 @@ export default {
       }
       return true
     },
-    submit() {
+    async submit() {
       if (!this.validate()) {
         return false
       }
@@ -60,14 +60,20 @@ export default {
         username: this.username,
         password: this.password
       }
-      signin(params).then((res) => {
+      const res = await signin(params)
+      console.log(res)
+      if (res.data.error_code !== 1) {
+        Toast(res.data.msg)
+        return
+      }
+      Toast('登录成功')
+      this.getUserInfo()
+    },
+    async getUserInfo() {
+      const res = await getUserInfo({ username: this.username })
+      if (res.length) {
         console.log(res)
-        if (res.data.code && res.data.code !== 0) {
-          Toast(res.data.message)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      }
     }
   }
 }

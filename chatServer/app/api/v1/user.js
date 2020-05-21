@@ -14,9 +14,14 @@ router.post('signup', async (ctx) => {
     password: v.get('body.password')
   }
   console.log('userParams', user)
-  const r = await User.signup(user)
-  console.log('res', r)
-  ctx.body = r
+  const res= await User.signup(user)
+  console.log('res', res)
+  if (res.code === 1) {
+    throw new Success('该用户名已注册')
+  }
+  if (res.code === -1) {
+    throw new Success('注册失败')
+  }
 })
 
 router.post('signin', async (ctx) => {
@@ -26,16 +31,35 @@ router.post('signin', async (ctx) => {
     password: v.get('body.password')
   }
   console.log('userParams', user)
-  const r = await User.signin(user)
-  console.log('res', r)
-  ctx.body = r
+  const res = await User.signin(user)
+  if (!res.length) {
+    throw new Success('用户名或密码错误', 0)
+  }
+  // console.log('res', res)
+  throw new Success()
 })
 
-// router.get('test', async (ctx) => {
-//   ctx.body = {
-//     test: 1,
-//     success: true
-//   }
-//   // throw new Success()
-// })
+router.get('getUserInfo', async (ctx) => {
+  const username = ctx.request.query.username
+  if (username) {
+    const res = await User.getUserInfo(username)
+    if (!res.length) {
+      throw new Success('获取用户信息失败', 0)
+    }
+    ctx.body = res[0]
+  }
+  // const v = await new RegisterValidator().validate(ctx)
+  // const user = {
+  //   username: v.get('body.username'), // body
+  //   password: v.get('body.password')
+  // }
+  // console.log('userParams', user)
+  // const res = await User.signin(user)
+  // if (res.code === -1) {
+  //   throw new Success('用户名或密码错误', 0)
+  // }
+  // console.log('res', res)
+  // throw new Success()
+})
+
 module.exports = router

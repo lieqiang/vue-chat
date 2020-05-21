@@ -7,22 +7,22 @@ const catchError = async (ctx, next) => {
         const isDev = true // global.config.environment === 'dev'
         const isHttpException = error instanceof HttpException
         if (isDev && !isHttpException) {
-            throw error // 抛出具体异常
+          throw error // 抛出具体异常
         }
         if (error instanceof HttpException) {
-            ctx.body = {
-                msg: error.msg,
-                error_code: error.errorCode,
-                request: `${ctx.method} ${ctx.path}`
-            }
-            ctx.status = error.code
+          ctx.body = {
+            msg: error.msg,
+            error_code: error.errorCode,
+            request: `${ctx.method} ${ctx.path}`
+          }
+          ctx.status = error.code
         } else {
-            ctx.body = {
-                msg: 'we made a mistake',
-                error_code: 999,
-                request: `${ctx.method} ${ctx.path}`
-            }
-            ctx.status = 500
+          ctx.body = {
+            msg: 'we made a mistake',
+            error_code: 999,
+            request: `${ctx.method} ${ctx.path}`
+          }
+          ctx.status = 500
         }
     }
 }
