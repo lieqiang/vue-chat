@@ -24,3 +24,11 @@ export function getUserInfo(query) {
     params: query
   })
 }
+
+export function search(query) {
+  return request({
+    url: '/v1/user/search',
+    method: 'get',
+    params: query
+  })
+}

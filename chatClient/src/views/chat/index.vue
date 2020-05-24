@@ -1,14 +1,19 @@
 <template>
   <div :style="{'width': deviceWidth, 'margin': '0 auto'}" class="main-content">
     <div class="service-page">
-      <nav-bar
+      <van-nav-bar fixed left-text="返回" @click-left="back">
+        <template #title>
+          <span>王麻子</span>
+        </template>
+      </van-nav-bar>
+      <!-- <nav-bar
         :has-slot="true"
         path="/questions/my-questions"
         name="更多"
       >
         <span class="question-tit" @click="emitEvent">李曾</span>
         <span class="question-sts">在线</span>
-      </nav-bar>
+      </nav-bar> -->
       <div :style="{ height: height + 'px' }" class="chat-container" @click="slideup">
         <div ref="wrapper" :style="{ height: height + 'px' }" :class="{'pc-bd': deviceWidth === '750px'}" class="chat-container-body" @touchstart="start" @touchend="end">
           <div v-if="isMsgLoadingShow" class="loading">
@@ -81,9 +86,9 @@
 import { PopupMixin } from '@/mixins/width'
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
-import { Toast, Button, Loading } from 'vant'
+import { NavBar, Toast, Button, Loading } from 'vant'
 import Vue from 'vue'
-import NavBar from '@/components/nav'
+// import NavBar from '@/components/nav'
 import msgItem from './msgItem'
 import Face from '@/components/face'
 // import Cookies from 'js-cookie'
@@ -91,11 +96,11 @@ import { EMOJI_LIST } from '@/utils/face'
 // import BScroll from 'better-scroll'
 import BScroll from '@better-scroll/core'
 Vue.use(Viewer)
-Vue.use(Toast).use(Button).use(Loading)
+Vue.use(Toast).use(NavBar).use(Button).use(Loading)
 
 export default {
   components: {
-    NavBar,
+    // NavBar,
     msgItem,
     Face
   },
@@ -203,6 +208,9 @@ export default {
     }
   },
   methods: {
+    back() {
+      window.history.go(-1)
+    },
     emitEvent() {
       this.$socket.emit('otherevent', 'from client')
     },

@@ -3,14 +3,13 @@ const { RegisterValidator } = require('@validator/validator')
 const { User } = require('@models/user')
 const { Success } = require('@core/http-exception')
 const router = new Router({
-    prefix: '/v1/user/'
+  prefix: '/v1/user/'
 })
-
 
 router.post('signup', async (ctx) => {
   const v = await new RegisterValidator().validate(ctx)
   const user = {
-    username: v.get('body.username'), // body
+    username: v.get('body.username'),
     password: v.get('body.password')
   }
   console.log('userParams', user)
@@ -27,7 +26,7 @@ router.post('signup', async (ctx) => {
 router.post('signin', async (ctx) => {
   const v = await new RegisterValidator().validate(ctx)
   const user = {
-    username: v.get('body.username'), // body
+    username: v.get('body.username'),
     password: v.get('body.password')
   }
   console.log('userParams', user)
@@ -35,7 +34,6 @@ router.post('signin', async (ctx) => {
   if (!res.length) {
     throw new Success('用户名或密码错误', 0)
   }
-  // console.log('res', res)
   throw new Success()
 })
 
@@ -48,18 +46,17 @@ router.get('getUserInfo', async (ctx) => {
     }
     ctx.body = res[0]
   }
-  // const v = await new RegisterValidator().validate(ctx)
-  // const user = {
-  //   username: v.get('body.username'), // body
-  //   password: v.get('body.password')
-  // }
-  // console.log('userParams', user)
-  // const res = await User.signin(user)
-  // if (res.code === -1) {
-  //   throw new Success('用户名或密码错误', 0)
-  // }
-  // console.log('res', res)
-  // throw new Success()
+})
+
+router.get('search', async (ctx) => {
+  const txt = ctx.request.query.txt
+  if (txt) {
+    const res = await User.search(txt)
+    if (!res.length) {
+      ctx.body = []
+    }
+    ctx.body = res
+  }
 })
 
 module.exports = router
