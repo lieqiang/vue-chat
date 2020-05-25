@@ -9,10 +9,21 @@
     />
     <div class="search-result">
       <van-cell-group>
-        <van-cell clickable v-for="(item, index) in result" :key="index" :title="item.name" :label="item.signature" />
+        <van-cell
+        v-for="(item, index) in result"
+        clickable
+        :key="index"
+        :title="item.name"
+        :label="item.signature"
+        @click="linkToSearchDetail(item)"
+      />
       </van-cell-group>
     </div>
-    <van-empty v-show="!result.length" image="search" :description="description" />
+    <van-empty
+      v-show="!result.length"
+      image="search"
+      :description="description"
+    />
   </div>
 </template>
 <script>
@@ -57,6 +68,12 @@ export default {
     },
     cancel() {
       this.$emit('cancel')
+    },
+    linkToSearchDetail(item) {
+      this.$router.push({
+        path: '/searchDetail',
+        query: item
+      })
     }
   }
 }

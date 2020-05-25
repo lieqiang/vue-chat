@@ -19,7 +19,7 @@
         <template #right-icon>
           <div class="right">
             <span class="name">{{ item.nickName }}</span>
-            <span class="desc">{{ item.desc }}</span>
+            <span class="desc">{{ item.signature }}</span>
           </div>
         </template>
       </van-cell>
@@ -56,42 +56,42 @@ export default {
         {
           nickName: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '这些都是测试数据，实际使用请严格按照该格式返回'
+          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
           nickName: '徐峥',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '代码在囧途，也要写到底'
+          signature: '代码在囧途，也要写到底'
         },
         {
           nickName: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '这些都是测试数据，实际使用请严格按照该格式返回'
+          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
           nickName: '马云',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '让天下没有难写的代码'
+          signature: '让天下没有难写的代码'
         },
         {
           nickName: '刘涛',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '如约而至，不负姊妹欢乐颂'
+          signature: '如约而至，不负姊妹欢乐颂'
         },
         {
           nickName: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '这些都是测试数据，实际使用请严格按照该格式返回'
+          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
           nickName: '马云',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '让天下没有难写的代码'
+          signature: '让天下没有难写的代码'
         },
         {
           nickName: '刘涛',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          desc: '如约而至，不负姊妹欢乐颂'
+          signature: '如约而至，不负姊妹欢乐颂'
         }
       ]
     }

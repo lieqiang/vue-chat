@@ -64,7 +64,11 @@ class User {
       }, { // 指定返回的值
         name: 1, // nickname
         photo: 1,
-        signature: 1
+        signature: 1,
+        sex: 1,
+        province: 1,
+        city: 1,
+        town: 1
       }).limit(10).sort({'name': 1})
     }
   }
