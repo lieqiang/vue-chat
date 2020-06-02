@@ -1,13 +1,26 @@
 <template>
   <div id="app">
-    <!-- <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/chat">chat</router-link>
-    </div> -->
+    <tab/>
     <router-view/>
   </div>
 </template>
 
+<script>
+import Tab from '@/components/Tab'
+export default {
+  components: {
+    Tab
+  },
+  sockets: {
+    receivingMessages(data) {
+      console.log(data)
+    }
+  },
+  methods: {
+
+  }
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

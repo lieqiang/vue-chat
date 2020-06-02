@@ -38,6 +38,7 @@
 </template>
 <script>
 import Vue from 'vue'
+
 import { NavBar, Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
 import Search from '@/components/Search'
 import Add from '@/components/Add'
@@ -95,6 +96,10 @@ export default {
         }
       ]
     }
+  },
+  created() {
+    this.$store.dispatch('getUserInfo')
+    this.$store.dispatch('getVchatInfo')
   },
   methods: {
     search() {

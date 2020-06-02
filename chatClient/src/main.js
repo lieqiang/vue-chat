@@ -5,7 +5,7 @@ import './icons'
 import 'normalize.css/normalize.css'
 import './styles/index.scss'
 import * as filters from './filters'
-// import store from './store'
+import store from './store'
 import VueSocketIO from 'vue-socket.io'
 import SocketIO from 'socket.io-client'
 
@@ -21,6 +21,6 @@ Object.keys(filters).forEach(key => {
 })
 new Vue({
   router,
-  // store,
+  store,
   render: h => h(App)
 }).$mount('#app')

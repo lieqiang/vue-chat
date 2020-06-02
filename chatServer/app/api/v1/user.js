@@ -16,11 +16,12 @@ router.post('signup', async (ctx) => {
   const res= await User.signup(user)
   console.log('res', res)
   if (res.code === 1) {
-    throw new Success('该用户名已注册')
+    throw new Success('该用户名已注册', -1)
   }
   if (res.code === -1) {
-    throw new Success('注册失败')
+    throw new Success('注册失败', -1)
   }
+  throw new Success()
 })
 
 router.post('signin', async (ctx) => {
@@ -32,19 +33,54 @@ router.post('signin', async (ctx) => {
   console.log('userParams', user)
   const res = await User.signin(user)
   if (!res.length) {
-    throw new Success('用户名或密码错误', 0)
+    throw new Success('用户名或密码错误', -1)
   }
   throw new Success()
 })
 
 router.get('getUserInfo', async (ctx) => {
   const username = ctx.request.query.username
+  console.log('us', username)
   if (username) {
     const res = await User.getUserInfo(username)
     if (!res.length) {
-      throw new Success('获取用户信息失败', 0)
+      throw new Success('获取用户信息失败', -1)
     }
-    ctx.body = res[0]
+    ctx.body = {
+      error_code: 0,
+      data: {
+        id: res[0]._id,
+        name: res[0].name,
+        photo: res[0].photo,
+        bubble: res[0].bubble,
+        chatTheme: res[0].chatTheme,
+        projectTheme: res[0].projectTheme,
+        wallpaper: res[0].wallpaper,
+        nickname: res[0].nickname,
+        signature: res[0].signature,
+        conversationsList: res[0].conversationsList,
+        code: res[0].code,
+        province: res[0].province,
+        city: res[0].city,
+        town: res[0].town
+      }
+    }
+  }
+})
+
+router.get('getVchatInfo', async (ctx) => {
+  const res = await User.getVchatInfo()
+  if (!res.length) {
+    throw new Success('获取通知助手信息失败', -1)
+  }
+  ctx.body = {
+    error_code: 0,
+    data: {
+      id: res[0]._id,
+      name: res[0].name,
+      nickname: res[0].nickname,
+      signature: res[0].signature
+    }
   }
 })
 
@@ -52,11 +88,33 @@ router.get('search', async (ctx) => {
   const txt = ctx.request.query.txt
   if (txt) {
     const res = await User.search(txt)
-    if (!res.length) {
-      ctx.body = []
+    if (!res || !res.length) {
+      ctx.body = {
+        error_code: 0,
+        data: []
+      }
     }
-    ctx.body = res
+    ctx.body = {
+      error_code: 0,
+      data: res
+    }
   }
 })
+
+// router.get('addToFriendsList', async (ctx) => {
+//   const res = await User.search(txt)
+//   // if (!res || !res.length) {
+//   //   ctx.body = []
+//   // }
+//   // ctx.body = res
+//   // const txt = ctx.request.query.txt
+//   // if (txt) {
+//   //   const res = await User.search(txt)
+//   //   if (!res || !res.length) {
+//   //     ctx.body = []
+//   //   }
+//   //   ctx.body = res
+//   // }
+// })
 
 module.exports = router

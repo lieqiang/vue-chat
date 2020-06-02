@@ -58,12 +58,12 @@ export default {
   methods: {
     async search() {
       const res = await search({ txt: this.inputText })
-      if (!res.data.length) {
+      if (res.data.error_code !== 0) {
         this.result = []
         this.description = '暂无搜索结果'
         return
       }
-      this.result = res.data
+      this.result = res.data.data
       console.log(res)
     },
     cancel() {

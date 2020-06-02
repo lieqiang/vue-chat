@@ -1,4 +1,4 @@
-const db = require('@core/db');
+const db = require('@core/db')
 let accountBase = db.model("accountBase", {
   code: String,
   status: String, // 1 已使用 0 未使用

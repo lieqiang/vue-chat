@@ -64,7 +64,7 @@ export default {
       }
       return true
     },
-    submit() {
+    async submit() {
       if (!this.validate()) {
         return false
       }
@@ -73,11 +73,17 @@ export default {
         username: this.username,
         password: this.password
       }
-      signup(params).then((res) => {
-        console.log(res)
-      }).catch((err) => {
-        console.log(err)
-      })
+      const res = await signup(params)
+      if (res.data.error_code !== 0) {
+        Toast(res.data.msg)
+        return
+      }
+      Toast('注册成功')
+      setTimeout(() => {
+        this.$router.push({
+          path: '/signin'
+        })
+      }, 1000)
     }
   }
 }

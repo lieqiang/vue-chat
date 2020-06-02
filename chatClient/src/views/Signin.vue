@@ -27,7 +27,7 @@
 <script>
 import Vue from 'vue'
 import { Field, Button, Toast } from 'vant'
-import { signin, getUserInfo } from '@/api/user'
+import { signin } from '@/api/user'
 Vue.use(Field).use(Button).use(Toast)
 export default {
   name: 'Home',
@@ -62,18 +62,17 @@ export default {
       }
       const res = await signin(params)
       console.log(res)
-      if (res.data.error_code !== 1) {
+      if (res.data.error_code !== 0) {
         Toast(res.data.msg)
         return
       }
       Toast('登录成功')
-      this.getUserInfo()
-    },
-    async getUserInfo() {
-      const res = await getUserInfo({ username: this.username })
-      if (res.length) {
-        console.log(res)
-      }
+      this.$store.dispatch('setUserName', this.username)
+      setTimeout(() => {
+        this.$router.push({
+          path: '/home'
+        })
+      }, 500)
     }
   }
 }

@@ -7,6 +7,7 @@ class User {
   constructor() {
 
   }
+
   static async initHelper() {
     users.collection.dropIndexes()
     const info = {
@@ -18,6 +19,7 @@ class User {
     }
     new users(info).save()
   }
+
   static async signup(params) {
     users.collection.dropIndexes()
     const res = await users.find({name: params.username})
@@ -36,12 +38,19 @@ class User {
       code: -1
     }
   }
+
   static async signin(params) {
     return await users.find({name: params.username, pass: params.password})
   }
+
   static async getUserInfo(username) {
     return await users.find({name: username})
   }
+
+  static async getVchatInfo() {
+    return await users.find({name: 'Vchat'})
+  }
+
   static async search(keyword) {
     let key = new RegExp(keyword)
     let params = [
@@ -62,6 +71,7 @@ class User {
           '$ne': 'Vchat' // 不等于、不包含
         }
       }, { // 指定返回的值
+        _id: 1,
         name: 1, // nickname
         photo: 1,
         signature: 1,

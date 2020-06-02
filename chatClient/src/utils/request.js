@@ -6,7 +6,7 @@ import { Toast } from 'vant'
 Vue.use(Toast)
 
 const service = axios.create({
-  baseURL: '', // config.api_base_url
+  // baseURL: '', // config.api_base_url
   timeout: 15000
 })
 service.interceptors.request.use(

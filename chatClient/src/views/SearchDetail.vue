@@ -1,39 +1,40 @@
 <template>
   <div>
-    <van-nav-bar fixed left-arrow>
+    <van-nav-bar fixed left-arrow @click-left="back">
       <template #right>
         <van-icon name="ellipsis" size="18" />
       </template>
     </van-nav-bar>
     <van-cell-group class="list">
-      <van-cell center v-for="(item, index) in data" :key="index" class="avatar">
+      <van-cell center class="avatar">
         <template #title>
           <van-image
             round
             width="50"
             height="50"
-            :src="item.src"
+            :src="friend.src"
           />
         </template>
         <template #right-icon>
           <div class="right">
-            <span class="name">{{ item.name }}</span>
-            <span class="desc">地区：{{ item.city }}</span>
+            <span class="name">{{ friend.name }}</span>
+            <span class="desc">地区：{{ friend.province.name }}-{{ friend.city.name }}-{{ friend.town.name }}</span>
           </div>
         </template>
       </van-cell>
-      <van-cell center v-for="(item, index) in data" title="个性签名" :value="item.signature" :key="index" class="mt-5" value-class="center" />
-      <van-cell center v-for="(item, index) in data" title="来源" value="搜索" :key="index" value-class="center" />
+      <van-cell title="个性签名" :value="friend.signature" class="mt-5" value-class="center" />
+      <van-cell title="来源" value="搜索" value-class="center" />
     </van-cell-group>
     <div class="add pt-5">
-      <van-button block type="default">添加到通讯录</van-button>
+      <van-button block type="default" @click="addToConversations">添加到通讯录</van-button>
     </div>
   </div>
 </template>
 <script>
 import Vue from 'vue'
 import { NavBar, Icon, Button, Cell, CellGroup, Image as VanImage } from 'vant'
-// import { search } from '@/api/user'
+import { mapState } from 'vuex'
+import { parseTime } from '@/utils'
 Vue.use(NavBar).use(Icon).use(Button).use(Cell).use(CellGroup).use(VanImage)
 
 export default {
@@ -42,18 +43,47 @@ export default {
   },
   data() {
     return {
-      data: [
-        {
-          name: '邹烈强',
-          city: '深圳',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
-        }
-      ]
+      friend: {
+        _id: '',
+        name: '',
+        province: '',
+        city: '',
+        town: '',
+        src: '',
+        signature: ''
+      }
     }
   },
+  computed: {
+    ...mapState(['userInfo', 'VchatInfo'])
+  },
+  created() {
+    this.friend = this.$route.query
+  },
   methods: {
-
+    back() {
+      window.history.go(-1)
+    },
+    async addToConversations() {
+      const params = {
+        name: this.userInfo.name,
+        time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+        nickName: this.userInfo.nickname,
+        signature: this.userInfo.signature,
+        read: [],
+        id: this.userInfo.id,
+        friendId: this.friend._id,
+        friendname: this.friend.name,
+        selfAndfriendRoomID: this.userInfo.id + '-' + this.friend._id,
+        friendAndVchatRoomID: this.friend._id + '-' + this.VchatInfo.id,
+        state: 'friend',
+        type: 'validate',
+        status: '0'
+      }
+      console.log(params)
+      debugger
+      // this.$socket.emit('sendVerificationMessage', params)
+    }
   }
 }
 </script>
