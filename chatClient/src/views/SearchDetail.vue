@@ -68,21 +68,22 @@ export default {
       const params = {
         name: this.userInfo.name,
         time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
-        nickName: this.userInfo.nickname,
+        nickname: this.userInfo.nickname,
         signature: this.userInfo.signature,
         read: [],
-        id: this.userInfo.id,
+        userID: this.userInfo.id, // 自己的 id
         friendId: this.friend._id,
-        friendname: this.friend.name,
+        vchatID: this.VchatInfo.id,
+        friendName: this.friend.name,
         selfAndfriendRoomID: this.userInfo.id + '-' + this.friend._id,
-        friendAndVchatRoomID: this.friend._id + '-' + this.VchatInfo.id,
+        friendAndVchatRoomID: this.friend._id + '-' + this.VchatInfo.id, // friendAndVchatRoomID 在初始化已经加入会话了
         state: 'friend',
         type: 'validate',
-        status: '0'
+        status: '0',
+        validationMessage: `${this.userInfo.name}请求添加好友`
       }
       console.log(params)
-      debugger
-      // this.$socket.emit('sendVerificationMessage', params)
+      this.$socket.emit('sendVerificationMessage', params)
     }
   }
 }

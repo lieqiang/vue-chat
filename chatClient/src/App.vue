@@ -7,14 +7,47 @@
 
 <script>
 import Tab from '@/components/Tab'
+import { mapState } from 'vuex'
+import { parseTime } from '@/utils'
 export default {
   components: {
     Tab
   },
   sockets: {
-    receivingMessages(data) {
+    joined(OnlineUser) {
+      console.log('客户端加入了', OnlineUser)
+      // this.$store.commit('setOnlineUser', OnlineUser)
+    },
+    receivingVerificationMessage(data) {
       console.log(data)
     }
+  },
+  computed: {
+    ...mapState(['userInfo', 'conversationsList'])
+  },
+  watch: {
+    conversationsList(newList, oldList) {
+      // this.$store.dispatch('setAdreessBooks', newList)
+      this.conversationsList.forEach(item => {
+        const params = {
+          name: this.userInfo.name,
+          time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+          roomID: item.roomID
+        }
+        this.$socket.emit('join', params)
+        console.log('params-- ', params)
+        // let room = {
+        //   roomid: item.roomID,
+        //   offset: 1,
+        //   limit: 200
+        // }
+        // this.$socket.emit('getHistoryMessages', room) 是否有必要？？？
+      })
+    }
+  },
+  created() {
+    this.$store.dispatch('getUserInfo')
+    this.$store.dispatch('getVchatInfo')
   },
   methods: {
 

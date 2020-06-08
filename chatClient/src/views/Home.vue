@@ -6,24 +6,28 @@
         <van-icon name="add-o" size="18" class="ml-20" @click="isAddShow = true" />
       </template>
     </van-nav-bar>
-    <van-cell-group class="list">
-      <van-cell center v-for="(item, index) in conversationsList" :key="index" to="/chat">
-        <template #title>
-          <van-image
-            round
-            width="50"
-            height="50"
-            :src="item.src"
-          />
-        </template>
-        <template #right-icon>
-          <div class="right">
-            <span class="name">{{ item.nickName }}</span>
-            <span class="desc">{{ item.signature }}</span>
-          </div>
-        </template>
-      </van-cell>
-    </van-cell-group>
+    <div class="wrapper">
+      <div class="content">
+        <van-cell-group class="list">
+          <van-cell center v-for="(item, index) in conversationsList" :key="index" to="/chat">
+            <template #title>
+              <van-image
+                round
+                width="50"
+                height="50"
+                :src="item.src"
+              />
+            </template>
+            <template #right-icon>
+              <div class="right">
+                <span class="name">{{ item.nickname }}</span>
+                <span class="desc">{{ item.signature }}</span>
+              </div>
+            </template>
+          </van-cell>
+        </van-cell-group>
+      </div>
+    </div>
     <div v-show="isShow" class="fixed">
       <search
         @cancel="cancel"
@@ -40,6 +44,7 @@
 import Vue from 'vue'
 
 import { NavBar, Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
+import BScroll from '@better-scroll/core'
 import Search from '@/components/Search'
 import Add from '@/components/Add'
 Vue.use(NavBar).use(Icon).use(Cell).use(CellGroup).use(Toast).use(VanImage)
@@ -55,42 +60,67 @@ export default {
       isAddShow: false,
       conversationsList: [
         {
-          nickName: '邹烈强',
+          nickname: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
-          nickName: '徐峥',
+          nickname: '徐峥',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '代码在囧途，也要写到底'
         },
         {
-          nickName: '邹烈强',
+          nickname: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
-          nickName: '马云',
+          nickname: '马云',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '让天下没有难写的代码'
         },
         {
-          nickName: '刘涛',
+          nickname: '刘涛',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '如约而至，不负姊妹欢乐颂'
         },
         {
-          nickName: '邹烈强',
+          nickname: '邹烈强',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '这些都是测试数据，实际使用请严格按照该格式返回'
         },
         {
-          nickName: '马云',
+          nickname: '马云',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '让天下没有难写的代码'
         },
         {
-          nickName: '刘涛',
+          nickname: '刘涛',
+          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
+          signature: '如约而至，不负姊妹欢乐颂'
+        },
+        {
+          nickname: '马云',
+          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
+          signature: '让天下没有难写的代码'
+        },
+        {
+          nickname: '刘涛',
+          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
+          signature: '如约而至，不负姊妹欢乐颂'
+        },
+        {
+          nickname: '邹烈强',
+          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
+          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
+        },
+        {
+          nickname: '马云',
+          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
+          signature: '让天下没有难写的代码'
+        },
+        {
+          nickname: '刘涛',
           src: 'https://img.yzcdn.cn/vant/cat.jpeg',
           signature: '如约而至，不负姊妹欢乐颂'
         }
@@ -98,8 +128,12 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('getUserInfo')
-    this.$store.dispatch('getVchatInfo')
+
+  },
+  mounted() {
+    const wrapper = document.querySelector('.wrapper')
+    const scroll = new BScroll(wrapper)
+    console.log(scroll)
   },
   methods: {
     search() {
@@ -118,8 +152,12 @@ export default {
   .ml-20 {
     margin-left: 20px;
   }
-  .list {
-    padding-top: 46px;
+  .wrapper {
+    position: fixed;
+    top: 46px;
+    bottom: 44px;
+    left: 0;
+    right: 0;
   }
   .van-cell {
     &:hover, &:active {

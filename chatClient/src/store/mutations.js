@@ -13,7 +13,6 @@ export default {
   },
   SET_CONVERSATIONS_LIST(state, data) {
     state.conversationsList = data
-    // state.conversationsList = state.conversationsList.filter(v => v.id !== data.id);
   },
   ADD_TO_CONVEASATIONS_LIST(state, data) {
     state.conversationsList.push(data)

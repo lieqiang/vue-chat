@@ -27,7 +27,7 @@ export default {}
     left: 0;
     right: 0;
     width: 100%;
-    background-color: #f2f2f2;
+    background-color: #f6f6f6;
     z-index: 999;
     .tab-item{
       flex: 1;
@@ -39,8 +39,7 @@ export default {}
     }
     .router-link-active {
       .tab-link {
-        color: #333;
-        border-bottom: 2px solid #eee;
+        color: #07c160;
       }
     }
   }

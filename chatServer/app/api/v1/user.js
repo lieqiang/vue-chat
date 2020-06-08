@@ -40,7 +40,7 @@ router.post('signin', async (ctx) => {
 
 router.get('getUserInfo', async (ctx) => {
   const username = ctx.request.query.username
-  console.log('us', username)
+  console.log('username', username)
   if (username) {
     const res = await User.getUserInfo(username)
     if (!res.length) {

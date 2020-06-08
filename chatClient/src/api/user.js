@@ -25,11 +25,10 @@ export function getUserInfo(query) {
   })
 }
 
-export function getVchatInfo(query) {
+export function getVchatInfo() {
   return request({
     url: '/user/getVchatInfo',
-    method: 'get',
-    params: query
+    method: 'get'
   })
 }
 
