@@ -20,10 +20,11 @@ export default {
     },
     receivingVerificationMessage(data) {
       console.log(data)
+      this.$store.commit('addAdressBooksMessages', data)
     }
   },
   computed: {
-    ...mapState(['userInfo', 'conversationsList'])
+    ...mapState(['userInfo', 'conversationsList', 'adressBooksMessages'])
   },
   watch: {
     conversationsList(newList, oldList) {

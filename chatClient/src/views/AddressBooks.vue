@@ -1,6 +1,26 @@
 <template>
   <div class="list">
     <van-index-bar :index-list="indexList">
+      <van-index-anchor index="#" />
+      <!-- <van-cell title="新的朋友">
+        <van-icon name="chat-o" badge="99+" />
+      </van-cell> -->
+      <van-cell center to="/chat">
+        <template #title>
+          <van-icon name="chat-o" color="#1989fa" size="40" badge="9" />
+          <!-- <van-image
+            round
+            width="50"
+            height="50"
+            src="@/assets/mine.jpg"
+          /> -->
+        </template>
+        <template #right-icon>
+          <div class="right">
+            <span class="name">新的朋友</span>
+          </div>
+        </template>
+      </van-cell>
       <template v-for="(item, index) in addressBooks">
         <van-index-anchor :key="index" :index="item.title" />
         <van-cell center v-for="(cell, idx) in item.items" :key="idx" to="/chat">
@@ -26,12 +46,13 @@
 <script>
 import Vue from 'vue'
 import { mapState } from 'vuex'
-import { IndexBar, IndexAnchor, Cell, Image as VanImage } from 'vant'
+import { IndexBar, IndexAnchor, Cell, Image as VanImage, Icon } from 'vant'
 
 Vue.use(IndexBar)
 Vue.use(IndexAnchor)
 Vue.use(Cell)
 Vue.use(VanImage)
+Vue.use(Icon)
 export default {
   data() {
     return {
@@ -67,8 +88,7 @@ export default {
         }
         map[key].items.push({
           name: item.name,
-          id: item.id,
-          signature: item.signature
+          id: item.id
         })
       })
       // 为了得到有序列表，我们需要处理 map
@@ -86,7 +106,8 @@ export default {
         return a.charCodeAt(0) - b.charCodeAt(0)
       })
       console.log(ret)
-      this.indexList = indexList
+      const newFriendIndex = ['#']
+      this.indexList = newFriendIndex.concat(indexList)
       return ret
     }
   }

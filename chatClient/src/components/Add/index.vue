@@ -64,6 +64,7 @@ export default {
         return
       }
       this.result = res.data.data
+      this.description = !res.data.data.length ? '暂无搜索结果' : ''
       console.log(res)
     },
     cancel() {

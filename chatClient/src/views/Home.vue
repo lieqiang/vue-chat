@@ -42,7 +42,6 @@
 </template>
 <script>
 import Vue from 'vue'
-
 import { NavBar, Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
 import BScroll from '@better-scroll/core'
 import Search from '@/components/Search'

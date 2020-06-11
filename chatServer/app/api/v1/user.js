@@ -88,12 +88,15 @@ router.get('search', async (ctx) => {
   const txt = ctx.request.query.txt
   if (txt) {
     const res = await User.search(txt)
-    if (!res || !res.length) {
+    console.log(res)
+    if (!res) {
       ctx.body = {
         error_code: 0,
         data: []
       }
+      return
     }
+
     ctx.body = {
       error_code: 0,
       data: res

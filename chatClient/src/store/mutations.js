@@ -20,6 +20,9 @@ export default {
   SET_ONLINE_USER(state, data) {
     state.OnlineUser = data
   },
+  ADD_ADRESS_BOOKS_MESSAGES(state, msg) {
+    state.adressBooksMessages.push(msg)
+  },
   SET_UN_READ(state, data) {
     if (data.clear) {
       state.unRead.forEach(v => {

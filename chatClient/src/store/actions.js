@@ -31,5 +31,8 @@ export default {
   },
   setUserName({ commit, state }, username) {
     commit('SET_USER_NAME', username)
+  },
+  addAdressBooksMessages({ commit, state }, msg) {
+    commit('ADD_ADRESS_BOOKS_MESSAGES', msg)
   }
 }
