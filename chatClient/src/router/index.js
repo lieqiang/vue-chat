@@ -1,15 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '@/views/Home.vue'
+import Tab from '@/AppMain'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '/',
-    name: 'index',
-    redirect: '/home'
-    // component: Home
-  },
   {
     path: '/signup',
     name: 'Signup',
@@ -21,19 +15,40 @@ const routes = [
     component: () => import(/* webpackChunkName: "signin" */ '@/views/Signin.vue')
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue')
+    path: '/',
+    component: Tab,
+    redirect: 'home',
+    children: [
+      {
+        path: '/home',
+        component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+        name: 'Home'
+      }
+    ]
   },
   {
     path: '/addressBooks',
-    name: 'AddressBooks',
-    component: () => import(/* webpackChunkName: "AddressBooks" */ '@/views/AddressBooks.vue')
+    component: Tab,
+    redirect: 'addressBooks',
+    children: [
+      {
+        path: '/addressBooks',
+        component: () => import(/* webpackChunkName: "AddressBooks" */ '@/views/AddressBooks.vue'),
+        name: 'AddressBooks'
+      }
+    ]
   },
   {
     path: '/me',
-    name: 'Me',
-    component: () => import(/* webpackChunkName: "Me" */ '@/views/Me.vue')
+    component: Tab,
+    redirect: 'me',
+    children: [
+      {
+        path: '/me',
+        component: () => import(/* webpackChunkName: "Me" */ '@/views/Me.vue'),
+        name: 'Me'
+      }
+    ]
   },
   {
     path: '/chat',

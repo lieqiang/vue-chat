@@ -9,6 +9,7 @@
 // }
 body {
   height: 100%;
+  line-height: 1.6;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -139,11 +140,11 @@ div:focus {
         position: absolute;
         top: 13px;
         width: 0;
-        left: -11px;
+        left: -9px;
         border-top: 5px solid transparent;
         border-left: 5px solid transparent;
         border-bottom: 5px solid transparent;
-        border-right: 7px solid #eee;
+        border-right: 5px solid #fff;
       }
     }
   }
@@ -157,11 +158,11 @@ div:focus {
         position: absolute;
         top: 13px;
         width: 0;
-        right: -11px;
+        right: -9px;
         border-top: 5px solid transparent;
         border-right: 5px solid transparent;
         border-bottom: 5px solid transparent;
-        border-left: 7px solid #5FB878;
+        border-left: 5px solid #b2e281;
       }
     }
   }
@@ -184,7 +185,7 @@ div:focus {
 }
 
 .pc-b-b {
-  border-bottom: 1px solid #ebeef5; // e5e5e5
+  border-bottom: 1px solid #ebeef5;
 }
 
 .van-swipe__indicator {

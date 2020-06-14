@@ -1,7 +1,7 @@
 <template>
   <div :style="{'width': deviceWidth, 'margin': '0 auto'}" class="main-content">
     <div class="service-page">
-      <van-nav-bar fixed left-text="返回" @click-left="back">
+      <van-nav-bar left-text="返回" @click-left="back">
         <template #title>
           <span>王麻子</span>
         </template>
@@ -20,8 +20,18 @@
             <van-loading color="#1989fa" />
           </div>
           <div ref="scrollContainer" class="scroll-container pb-20">
-            <div v-show="isLoadMoreShow" class="loadMore">
-              <span>{{ pullDownTxt }}</span>
+            <div class="pulldown-scroller">
+              <div class="pulldown-wrapper">
+                <div v-show="beforePullDown">
+                  <span>Pull Down and refresh</span>
+                </div>
+                <div v-show="!beforePullDown">
+                  <div v-show="isPullingDown">
+                    <span>Loading...</span>
+                  </div>
+                  <div v-show="!isPullingDown"><span>Refresh success</span></div>
+                </div>
+              </div>
             </div>
             <div
               v-for="(item,index) in msgList"
@@ -88,23 +98,23 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 import { NavBar, Toast, Button, Loading } from 'vant'
 import Vue from 'vue'
-// import NavBar from '@/components/nav'
 import msgItem from './msgItem'
 import Face from '@/components/face'
-// import Cookies from 'js-cookie'
 import { EMOJI_LIST } from '@/utils/face'
-// import BScroll from 'better-scroll'
 import BScroll from '@better-scroll/core'
+import PullDown from '@better-scroll/pull-down'
+BScroll.use(PullDown)
 Vue.use(Viewer)
 Vue.use(Toast).use(NavBar).use(Button).use(Loading)
-
+const TIME_BOUNCE = 800
+const THRESHOLD = 70
+const STOP = 56
 export default {
   components: {
-    // NavBar,
     msgItem,
     Face
   },
-  mixins: [PopupMixin], // this.width
+  mixins: [PopupMixin],
   data: function() {
     return {
       questionInfo: {},
@@ -117,9 +127,8 @@ export default {
       viewer: null,
       msgList: [
         {
-          txt: '车身技术和骗局',
+          txt: '按照此前我们报道过的消息，今年的iPhone12系列采用A14处理器已经毫无悬念。该处理器将会使用台积电5nm工艺，而新一代的iPad/iPad Pro则大概率会用上A14X处理器，Apple Watch方面的话，，则是最新的S6处理器。',
           sts_time: 1588668720014,
-          img: 'https://weiwq.oss-cn-shanghai.aliyuncs.com/zscf/quession/1569467530268-99-929.png;https://weiwq.oss-cn-shanghai.aliyuncs.com/zscf/quession/1569467530982-66-133.png;https://weiwq.oss-cn-shanghai.aliyuncs.com/zscf/quession/1569467532295-162-271.png',
           ques_id: 201909260661,
           op_id: 0,
           id: 201909260343
@@ -133,7 +142,15 @@ export default {
           id: 201909260344
         },
         {
-          txt: '没看到快快快点快点开空调开',
+          txt: '原标题：苹果A18处理器曝光，将采用2nm工艺苹果公司在CPU上的研发进度一直以来都领先着整个手机行业，尤其是在先进工艺的采用方面。除了今年的A14处理器会用上5nm工艺外，根据最新消息透露，未来几年苹果的CPU路线图已经制定完成，如无意外的话，2024年就可以看到2nm工艺的A18处理器了，而这几年中苹果处理器的IPC将会每年上升15-30%。',
+          sts_time: 1588668730014,
+          img: null,
+          ques_id: 201909260661,
+          op_id: 1,
+          id: 201909260345
+        },
+        {
+          txt: '为了满足这些场景，它不仅支持惯性滚动、边界回弹、滚动条淡入淡出等效果的灵活配置，让滚动更加流畅，同时还提供了很多 API 方法和事件，以便我们更快地实现滚动场景下的需求，如下拉刷新、上拉加载。由于它基于原生 JavaScript 实现，不依赖任何框架，所以既可以原生 JavaScript 引用，也可以与目前前端 MVVM 框架结合使用，比如，其官网上的示例就是与 Vue 的结合。',
           sts_time: 1588668730014,
           img: null,
           ques_id: 201909260661,
@@ -142,9 +159,8 @@ export default {
         }
       ],
       scroll: null,
-      isLoadMoreShow: false,
-      posY: 0,
-      pullDownTxt: '已经到顶了',
+      beforePullDown: true,
+      isPullingDown: false,
       isInit: true,
       isFaceShow: false,
       reg: /(^\s*)|(\s*$)/g,
@@ -170,11 +186,6 @@ export default {
         this.refresh()
       }
     },
-    posY(newVal) {
-      if (newVal > 28) {
-        this.isLoadMoreShow = true
-      }
-    },
     isFaceShow(current, prev) {
       this.calculateHeight()
       this.$nextTick(() => { // 顺序不能乱
@@ -190,13 +201,10 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.calculateHeight()
+      this.initScroll()
     })
   },
   sockets: {
-    test(data) {
-      console.log(data)
-    },
-    // 这里是监听connect事件
     connect() {
       // 获取每台客服端生成的id
       this.websocketid = this.$socket.id
@@ -229,7 +237,6 @@ export default {
     androidResizeHandle() {
       window.addEventListener('resize', () => {
         if (this.$route.path === '/questions/questions') {
-          // console.log('resize')
           this.calculateHeight()
           this.$nextTick(() => {
             this.scroll.refresh() // 必须
@@ -256,10 +263,6 @@ export default {
         this.scroll.enable()
       }
     },
-    // add soket
-    onSocket(params) {
-
-    },
     addNewMsg(newMsg) {
       this.msgList.push(newMsg)
       this.$nextTick(() => {
@@ -277,17 +280,19 @@ export default {
     stop(event) {},
     calculateHeight() {
       const windowClientHeight = document.documentElement.clientHeight || document.body.clientHeight
-      this.height = windowClientHeight - 47 - (this.isFaceShow ? 189 : 0) - 50
+      this.height = windowClientHeight - 47 - (this.isFaceShow ? 189 : 0) - 46
     },
     initScroll() {
       const wrapper = this.$refs.wrapper
       this.$nextTick(() => {
         this.scroll = new BScroll(wrapper, {
-          probeType: 3,
           click: true,
           mouseWheel: true,
+          scrollY: true,
+          bounceTime: TIME_BOUNCE, // 设置回弹动画的动画时长
           pullDownRefresh: {
-            threshold: 28
+            threshold: THRESHOLD, // 配置顶部下拉的距离来决定刷新时机
+            stop: STOP // 回弹停留的距离
           }
         })
         this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
@@ -296,13 +301,17 @@ export default {
       })
     },
     bindSrollEvent() {
-      this.scroll.on('scroll', (pos) => {
-        if (!this.isFaceShow) {
-          this.posY = pos.y
-        }
-      })
       this.scroll.on('pullingDown', () => {
-        this.scroll.finishPullDown()
+        this.beforePullDown = false
+        this.isPullingDown = true
+        setTimeout(() => {
+          this.isPullingDown = false
+          this.scroll.finishPullDown()
+        }, 500)
+        setTimeout(() => {
+          this.beforePullDown = true
+          this.scroll.refresh()
+        }, TIME_BOUNCE)
       })
     },
     refresh() {
@@ -311,9 +320,9 @@ export default {
     scrollTo(y, time) {
       this.scroll.scrollTo(0, y, time)
     },
-    finishPullDown() {
-      this.scroll.finishPullDown()
-    },
+    // finishPullDown() {
+    //   this.scroll.finishPullDown()
+    // },
     focus() {
       if (this.isFaceShow) {
         this.isFaceShow = false
@@ -381,6 +390,18 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 @import '../../styles/face.scss';
+  .chat-container-body {
+    background-color: #eee;
+  }
+  .pulldown-wrapper {
+    position: absolute;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    transform: translateY(-100%) translateZ(0);
+    text-align: center;
+    color: #999
+  }
   .mine {
     .other-info {
       margin-left: 45px;
@@ -400,17 +421,14 @@ export default {
     }
   }
   .other-info {
-    min-height: 36px;
     position: relative;
     /deep/ .item-txt {
       display: inline-block;
       word-break: break-all;
       border-radius: 5px;
       max-width: 100%;
-      min-height: 36px;
       font-size: 14px;
-      padding: 8px 8px;
-      line-height: 20px;
+      padding: 9px 8px;
       position: relative;
       /deep/ .iconf {
         width: 20px;
@@ -422,13 +440,10 @@ export default {
       cursor: pointer;
     }
   }
-  .loadMore {
-    text-align: center;
-  }
   .chat-avatar {
     display: inline-block;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
   .other {
     padding: 10px;
@@ -443,13 +458,13 @@ export default {
       display: flex;
       justify-content: flex-start;
       .other-face {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         overflow: hidden;
         font-size: 12px;
         display: flex;
-        flex: 0 0 36px;
+        flex: 0 0 40px;
         align-items: center;
         justify-content: center;
         .mine-avatar {
@@ -460,8 +475,8 @@ export default {
     }
     .other-info {
       /deep/ .item-txt {
-        background: #eeeeee;
-        color: #444;
+        background: #fff;
+        color: #000;
       }
       margin-left: 10px;
       &.voice-play {
@@ -504,13 +519,13 @@ export default {
       justify-content: flex-end;
       .other-face {
         order: 1;
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
         border-radius: 50%;
         overflow: hidden;
         font-size: 12px;
         display: flex;
-        flex: 0 0 36px;
+        flex: 0 0 40px;
         align-items: center;
         justify-content: center;
         .user-avatar {
@@ -521,8 +536,8 @@ export default {
     }
     .other-info {
       /deep/ .item-txt {
-        background-color: #5fb878;
-        color: #fff;
+        background-color: #b2e281;
+        color: #000;
       }
       /deep/ .images {
         display: block;

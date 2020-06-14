@@ -27,7 +27,8 @@
 <script>
 import Vue from 'vue'
 import { Field, Button, Toast } from 'vant'
-import { signin } from '@/api/user'
+// import { signin } from '@/api/user'
+import { Token } from '@/utils/token'
 Vue.use(Field).use(Button).use(Toast)
 export default {
   name: 'Home',
@@ -55,24 +56,19 @@ export default {
       if (!this.validate()) {
         return false
       }
-      console.log('submit')
-      const params = {
-        username: this.username,
-        password: this.password
-      }
-      const res = await signin(params)
-      console.log(res)
-      if (res.data.error_code !== 0) {
-        Toast(res.data.msg)
-        return
-      }
-      Toast('登录成功')
-      this.$store.dispatch('setUserName', this.username)
-      setTimeout(() => {
-        this.$router.push({
-          path: '/home'
-        })
-      }, 500)
+      const token = new Token(this.username, this.password)
+      token.verify(() => {
+        Toast('登录成功')
+        this.$store.dispatch('setUserName', this.username)
+        setTimeout(() => {
+          this.$router.push({
+            path: '/home'
+            // query: {
+            //   username: this.username
+            // }
+          })
+        }, 500)
+      })
     }
   }
 }

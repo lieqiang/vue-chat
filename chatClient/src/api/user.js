@@ -1,17 +1,31 @@
 import qs from 'qs'
 import request from '@/utils/request'
-export function signup(query) {
+
+export function getToken(query) {
   return request({
-    url: '/user/signup',
+    url: '/token',
     method: 'post',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    },
     data: qs.stringify(query)
   })
 }
 
-export function signin(query) {
+export function verifyToken(query) {
   return request({
-    url: '/user/signin',
+    url: '/token/verify',
+    method: 'post',
+    headers: {
+      'content-type': 'application/x-www-form-urlencoded'
+    },
+    data: qs.stringify(query)
+  })
+}
+
+export function signup(query) {
+  return request({
+    url: '/user/signup',
     method: 'post',
     data: qs.stringify(query)
   })

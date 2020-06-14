@@ -1,18 +1,13 @@
 <template>
   <div id="app">
-    <tab/>
     <router-view/>
   </div>
 </template>
 
 <script>
-import Tab from '@/components/Tab'
 import { mapState } from 'vuex'
 import { parseTime } from '@/utils'
 export default {
-  components: {
-    Tab
-  },
   sockets: {
     joined(OnlineUser) {
       console.log('客户端加入了', OnlineUser)
