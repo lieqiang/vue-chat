@@ -2,21 +2,21 @@ const { LinValidator, Rule } = require('@core/lin-validator-v2')
 const User = require('@models/user')
 // const { LoginType, artType } = require('@lib/enum')
 class PositiveIntegerValidator extends LinValidator {
-    constructor() {
-        super()
-        this.id = [
-            new Rule('isInt', 'id需要是正整数', {
-                min: 1
-            })
-        ]
-    }
+  constructor() {
+    super()
+    this.id = [
+        new Rule('isInt', 'id需要是正整数', {
+            min: 1
+        })
+    ]
+  }
 }
 
 class RegisterValidator extends LinValidator {
   constructor() {
     super()
     this.username = [
-      new Rule('isLength', '昵称不符合长度规范', {
+      new Rule('isLength', '用户名不符合长度规范', {
         min: 4,
         max: 32
       })
@@ -59,34 +59,34 @@ class RegisterValidator extends LinValidator {
 
 }
 
-// class TokenValidator extends LinValidator {
-//     constructor() {
-//         super()
-//         this.account = [
-//             new Rule('isLength', '不符合账号规则', {
-//                 min: 4,
-//                 max: 32
-//             })
-//         ]
-//         this.secret = [
-//             // validator.js
-//             new Rule('isOptional'),
-//             new Rule('isLength', '至少6个字符', {
-//                 min: 6,
-//                 max: 128
-//             })
-//         ]
-//         this.validateType = checkType
-//     }
-// }
+class TokenValidator extends LinValidator {
+  constructor() {
+    super()
+    this.account = [
+        new Rule('isLength', '不符合账号规则', {
+            min: 4,
+            max: 32
+        })
+    ]
+    this.secret = [
+        // validator.js
+        new Rule('isOptional'),
+        new Rule('isLength', '至少6个字符', {
+            min: 6,
+            max: 128
+        })
+    ]
+    this.validateType = checkType
+  }
+}
 
 class NotEmptyValidator extends LinValidator {
-    constructor() {
-        super()
-        this.token = [
-            new Rule('isLength', 'token不能为空', { min: 1 })
-        ]
-    }
+  constructor() {
+    super()
+    this.token = [
+      new Rule('isLength', 'token不能为空', { min: 1 })
+    ]
+  }
 }
 
 // function checkType(vals){
@@ -119,57 +119,50 @@ class NotEmptyValidator extends LinValidator {
 //     }
 // }
 
-// class ClassicValidator extends LikeValidator {
-
-// }
-
 class SearchValidator extends LinValidator {
-    constructor() {
-        super()
-        this.q = [
-            new Rule('isLength', '搜索关键词不能为空', {
-                min: 1,
-                max: 16
-            })
-        ]
-        this.start = [
-            new Rule('isInt', '不符合规范', {
-                min: 0,
-                max: 60000
-            }),
-            new Rule('isOptional', '', 0)
-        ]
-        this.count = [
-            new Rule('isInt', '不符合规范', {
-                min: 1,
-                max: 20
-            }),
-            new Rule('isOptional', '', 20)
-        ]
-
-    }
+  constructor() {
+    super()
+    this.q = [
+      new Rule('isLength', '搜索关键词不能为空', {
+        min: 1,
+        max: 16
+      })
+    ]
+    this.start = [
+      new Rule('isInt', '不符合规范', {
+        min: 0,
+        max: 60000
+      }),
+      new Rule('isOptional', '', 0)
+    ]
+    this.count = [
+      new Rule('isInt', '不符合规范', {
+        min: 1,
+        max: 20
+      }),
+      new Rule('isOptional', '', 20)
+    ]
+  }
 }
 
 class AddShortCommentValidator extends PositiveIntegerValidator {
-    constructor() {
-        super()
-        this.content = [
-            new Rule('isLength', '必须在1到12个字符之间', {
-                min: 1,
-                max: 12
-            })
-        ]
-    }
+  constructor() {
+    super()
+    this.content = [
+      new Rule('isLength', '必须在1到12个字符之间', {
+        min: 1,
+        max: 12
+      })
+    ]
+  }
 }
 
-
 module.exports = {
-    PositiveIntegerValidator,
-    RegisterValidator,
-    // TokenValidator,
-    NotEmptyValidator,
-    // LikeValidator,
-    // ClassicValidator,
-    SearchValidator,
-    AddShortCommentValidator
+  PositiveIntegerValidator,
+  RegisterValidator,
+  TokenValidator,
+  NotEmptyValidator,
+  // LikeValidator,
+  SearchValidator,
+  AddShortCommentValidator
 }

@@ -54,7 +54,7 @@ class User {
     }
   }
 
-  static async signin(params) {
+  static async getUser(params) {
     return await users.find({name: params.username, pass: params.password})
   }
 

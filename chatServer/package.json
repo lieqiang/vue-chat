@@ -9,7 +9,9 @@
   "author": "lieqiang zou",
   "license": "ISC",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.11.0",
     "koa-bodyparser": "^4.3.0",
     "koa-router": "^8.0.8",
@@ -27,6 +29,7 @@
     "@models": "app/models",
     "@core": "core",
     "@lib": "app/lib",
+    "@config": "app/config",
     "@middlewares": "middlewares",
     "@validator": "app/validator"
   }
