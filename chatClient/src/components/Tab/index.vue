@@ -8,7 +8,7 @@
     </router-link>
     <router-link tag="div" class="tab-item" to="/addressBooks">
       <span class="tab-icon">
-        <van-icon name="friends-o" size="20" badge="10" />
+        <van-icon name="friends-o" size="20" :badge="count" />
       </span>
       <span class="tab-link">通讯录</span>
     </router-link>
@@ -22,11 +22,30 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { Icon } from 'vant'
 import Vue from 'vue'
 Vue.use(Icon)
 export default {
-
+  data() {
+    return {
+      count: ''
+    }
+  },
+  computed: {
+    ...mapGetters(['adressBooksMessages'])
+  },
+  watch: {
+    adressBooksMessages(newVal, oldVal) {
+      console.log('newVal', newVal)
+      if (!newVal.length) {
+        this.count = ''
+        console.log('无')
+        return
+      }
+      this.count = newVal.length > 100 ? '99+' : newVal.length
+    }
+  }
 }
 </script>
 

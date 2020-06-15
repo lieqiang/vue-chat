@@ -60,6 +60,8 @@ export default {
       token.verify(() => {
         Toast('登录成功')
         this.$store.dispatch('setUserName', this.username)
+        this.$store.dispatch('getUserInfo')
+        this.$store.dispatch('getVchatInfo')
         setTimeout(() => {
           this.$router.push({
             path: '/home'

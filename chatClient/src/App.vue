@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 export default {
   sockets: {
@@ -15,15 +15,14 @@ export default {
     },
     receivingVerificationMessage(data) {
       console.log(data)
-      this.$store.commit('addAdressBooksMessages', data)
+      this.$store.dispatch('addAdressBooksMessages', data)
     }
   },
   computed: {
-    ...mapState(['userInfo', 'conversationsList', 'adressBooksMessages'])
+    ...mapGetters(['userInfo', 'conversationsList'])
   },
   watch: {
     conversationsList(newList, oldList) {
-      // this.$store.dispatch('setAdreessBooks', newList)
       this.conversationsList.forEach(item => {
         const params = {
           name: this.userInfo.name,
@@ -41,10 +40,7 @@ export default {
       })
     }
   },
-  created() {
-    this.$store.dispatch('getUserInfo')
-    this.$store.dispatch('getVchatInfo')
-  },
+  created() {},
   methods: {
 
   }
