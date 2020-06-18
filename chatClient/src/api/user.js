@@ -1,7 +1,7 @@
 import qs from 'qs'
 import request from '@/utils/request'
 
-export function getToken(query) {
+export function getAccessToken(query) {
   return request({
     url: '/token',
     method: 'post',

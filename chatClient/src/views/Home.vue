@@ -131,8 +131,9 @@ export default {
   },
   mounted() {
     const wrapper = document.querySelector('.wrapper')
-    const scroll = new BScroll(wrapper)
-    console.log(scroll)
+    const scroll = new BScroll(wrapper, { // eslint-disable-line
+      click: true
+    })
   },
   methods: {
     search() {

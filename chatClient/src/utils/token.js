@@ -1,5 +1,9 @@
-import Cookies from 'js-cookie'
-import { getToken, verifyToken } from '@/api/user'
+import Vue from 'vue'
+import { Toast } from 'vant'
+import { getToken, setToken } from '@/utils/auth'
+import { getAccessToken, verifyToken } from '@/api/user'
+Vue.use(Toast)
+
 class Token {
   constructor(username, password) {
     this.username = username
@@ -7,7 +11,7 @@ class Token {
   }
 
   verify(callBack) {
-    var token = Cookies.get('token')
+    var token = getToken()
     if (!token) {
       this.getTokenFromServer(callBack)
     } else {
@@ -16,7 +20,11 @@ class Token {
   }
 
   async _veirfyFromServer(token, callBack) {
-    const res = await verifyToken({ token: token })
+    const res = await verifyToken({ username: this.username, password: this.password, token: token })
+    if (res.data.error_code !== 0) {
+      Toast(res.data.msg)
+      return
+    }
     const valid = res.data.isValid
     if (!valid) {
       this.getTokenFromServer(callBack)
@@ -26,9 +34,9 @@ class Token {
   }
 
   async getTokenFromServer(callBack) {
-    const res = await getToken({ username: this.username, password: this.password })
+    const res = await getAccessToken({ username: this.username, password: this.password })
     if (res.data.token) {
-      Cookies.set('token', res.data.token, { expires: 7 })
+      setToken(res.data.token, { expires: 7 })
       callBack && callBack()
     }
   }

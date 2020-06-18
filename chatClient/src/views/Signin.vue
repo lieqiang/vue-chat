@@ -27,7 +27,6 @@
 <script>
 import Vue from 'vue'
 import { Field, Button, Toast } from 'vant'
-// import { signin } from '@/api/user'
 import { Token } from '@/utils/token'
 Vue.use(Field).use(Button).use(Toast)
 export default {

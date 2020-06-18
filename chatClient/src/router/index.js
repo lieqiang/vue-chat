@@ -5,6 +5,11 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/404',
+    component: () => import('@/views/errorPage/404'),
+    hidden: true
+  },
+  {
     path: '/signup',
     name: 'Signup',
     component: () => import(/* webpackChunkName: "signup" */ '@/views/Signup.vue')
@@ -56,10 +61,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "chat" */ '@/views/chat/index.vue')
   },
   {
+    path: '/newFriends',
+    name: 'NewFriends',
+    component: () => import(/* webpackChunkName: "newFriends" */ '@/views/NewFriends.vue')
+  },
+  {
     path: '/searchDetail',
     name: 'SearchDetail',
     component: () => import(/* webpackChunkName: "searchDetail" */ '@/views/SearchDetail.vue')
-  }
+  },
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const router = new VueRouter({
