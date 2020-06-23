@@ -2,18 +2,9 @@
   <div class="list">
     <van-index-bar :index-list="indexList">
       <van-index-anchor index="#" />
-      <!-- <van-cell title="新的朋友">
-        <van-icon name="chat-o" badge="99+" />
-      </van-cell> -->
-      <van-cell center to="/chat">
+      <van-cell center to="/newFriends">
         <template #title>
-          <van-icon name="chat-o" color="#1989fa" size="40" badge="9" />
-          <!-- <van-image
-            round
-            width="50"
-            height="50"
-            src="@/assets/mine.jpg"
-          /> -->
+          <van-icon name="chat-o" color="#1989fa" size="40" :badge="count" />
         </template>
         <template #right-icon>
           <div class="right">
@@ -45,7 +36,7 @@
 
 <script>
 import Vue from 'vue'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import { IndexBar, IndexAnchor, Cell, Image as VanImage, Icon } from 'vant'
 
 Vue.use(IndexBar)
@@ -56,24 +47,36 @@ Vue.use(Icon)
 export default {
   data() {
     return {
+      count: '',
       addressBooks: [],
       indexList: []
     }
   },
   computed: {
-    ...mapState(['conversationsList'])
+    ...mapGetters(['conversationsList', 'adressBooksMessages'])
   },
   watch: {
     conversationsList(newVal, oldVal) {
       console.log('newVal', newVal)
       this.addressBooks = this._normalizeList(newVal)
+    },
+    adressBooksMessages(newVal, oldVal) {
+      this.getMessagesCount(newVal)
     }
   },
   created() {
     console.log('enter')
+    this.getMessagesCount(this.adressBooksMessages)
     this.addressBooks = this._normalizeList(this.conversationsList)
   },
   methods: {
+    getMessagesCount(newVal) {
+      if (!newVal.length) {
+        this.count = ''
+        return
+      }
+      this.count = newVal.length > 100 ? '99+' : newVal.length
+    },
     _normalizeList(list) {
       const map = {}
       const indexList = []

@@ -2,19 +2,19 @@
   <div class="tab">
     <router-link tag="div" class="tab-item" to="/home">
       <span class="tab-icon">
-        <van-icon name="chat-o" size="20" badge="10" />
+        <van-icon :color="activeColor('/home')" name="chat-o" size="20" badge="10" />
       </span>
       <span class="tab-link">聊天</span>
     </router-link>
     <router-link tag="div" class="tab-item" to="/addressBooks">
       <span class="tab-icon">
-        <van-icon name="friends-o" size="20" :badge="count" />
+        <van-icon :color="activeColor('/addressBooks')" name="friends-o" size="20" :badge="count" />
       </span>
       <span class="tab-link">通讯录</span>
     </router-link>
     <router-link tag="div" class="tab-item" to="/me">
       <span class="tab-icon">
-        <van-icon name="contact" size="20" />
+        <van-icon :color="activeColor('/me')" name="contact" size="20" />
       </span>
       <span class="tab-link">我</span>
     </router-link>
@@ -37,13 +37,20 @@ export default {
   },
   watch: {
     adressBooksMessages(newVal, oldVal) {
-      console.log('newVal', newVal)
       if (!newVal.length) {
         this.count = ''
-        console.log('无')
         return
       }
       this.count = newVal.length > 100 ? '99+' : newVal.length
+    }
+  },
+  methods: {
+    activeColor(name) {
+      const { path } = this.$route
+      if (path === name) {
+        return '#07c160'
+      }
+      return ''
     }
   }
 }

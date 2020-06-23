@@ -1,7 +1,7 @@
 export default {
-  SET_USER_NAME(state, username) {
-    state.username = username
-  },
+  // SET_USER_NAME(state, username) {
+  //   state.username = username
+  // },
   SET_USER_INFO(state, data) {
     state.userInfo = data
   },

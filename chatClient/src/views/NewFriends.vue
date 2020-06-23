@@ -1,36 +1,50 @@
 <template>
   <div>
-    <van-cell-group class="list">
-      <van-cell center v-for="(item, index) in list" :key="index" to="/searchDetail">
-        <template #title>
-          <van-image
-            round
-            width="50"
-            height="50"
-            :src="item.src"
-          />
-        </template>
-        <template #right-icon>
-          <div class="right">
-            <div class="info">
-              <span class="name">{{ item.nickname }}</span>
-              <span class="desc">{{ item.signature }}</span>
+    <van-nav-bar
+      fixed
+      left-text="新的朋友"
+      right-text="添加朋友"
+      left-arrow
+      @click-left="back"
+      @click-right="onClickRight"
+    />
+    <div class="wrapper">
+      <van-cell-group class="list">
+        <van-cell center v-for="(item, index) in list" :key="index" to="/searchDetail">
+          <template #title>
+            <van-image
+              round
+              width="50"
+              height="50"
+              :src="item.src"
+            />
+          </template>
+          <template #right-icon>
+            <div class="right">
+              <div class="info">
+                <span class="name">{{ item.nickname || item.name }}</span>
+                <span class="desc">{{ item.signature }}</span>
+              </div>
+              <div class="status">
+                <van-button v-if="item.status === '0'" type="primary" size="small">添加</van-button>
+                <span v-if="item.status === '1'" class="added">已添加</span>
+                <span v-if="item.status === '2'" class="added">已过期</span>
+              </div>
             </div>
-            <div class="status">
-              <van-button v-if="item.sts === 0" type="primary" size="small">添加</van-button>
-              <span v-if="item.sts === 1" class="added">已添加</span>
-              <span v-if="item.sts === 2" class="added">已过期</span>
-            </div>
-          </div>
-        </template>
-      </van-cell>
-    </van-cell-group>
+          </template>
+        </van-cell>
+      </van-cell-group>
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import { CellGroup, Cell, Image as VanImage, Icon, Button } from 'vant'
+import BScroll from '@better-scroll/core'
+import { mapGetters } from 'vuex'
+import { NavBar, CellGroup, Cell, Image as VanImage, Icon, Button } from 'vant'
+import { getNewFriendsMsg } from '@/api/message'
+Vue.use(NavBar)
 Vue.use(CellGroup)
 Vue.use(Cell)
 Vue.use(VanImage)
@@ -39,51 +53,50 @@ Vue.use(Button)
 export default {
   data() {
     return {
-      list: [
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回',
-          sts: 1
-        },
-        {
-          nickname: '徐峥',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '代码在囧途，也要写到底',
-          sts: 2
-        },
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回',
-          sts: 2
-        },
-        {
-          nickname: '马云',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '让天下没有难写的代码',
-          sts: 1
-        },
-        {
-          nickname: '刘涛',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '如约而至，不负姊妹欢乐颂',
-          sts: 0
-        }
-      ]
+      list: []
     }
   },
   computed: {
+    ...mapGetters(['VchatInfo'])
   },
   watch: {
   },
   created() {
+    this.getNewFriendsMsg()
   },
-  methods: {}
+  methods: {
+    back() {
+      window.history.go(-1)
+    },
+    async getNewFriendsMsg() {
+      const roomID = this.VchatInfo.roomID
+      const res = await getNewFriendsMsg({ roomID })
+      if (res.data.error_code !== 0) {
+        return
+      }
+      console.log(this.list)
+      this.list = res.data.data
+      this.$nextTick(() => {
+        const wrapper = document.querySelector('.wrapper')
+        const scroll = new BScroll(wrapper, { // eslint-disable-line
+          click: true
+        })
+      })
+    },
+    onClickRight() {
+    }
+  }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
   // scss用变量的形式改造 参考点证
+  .wrapper {
+    position: fixed;
+    top: 46px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
   .van-cell__title {
     flex: 0 0 50px;
   }

@@ -56,19 +56,13 @@ export default {
         return false
       }
       const token = new Token(this.username, this.password)
+      // 登录失败 需提示多个验证失败的提示
       token.verify(() => {
         Toast('登录成功')
-        this.$store.dispatch('setUserName', this.username)
-        this.$store.dispatch('getUserInfo')
-        this.$store.dispatch('getVchatInfo')
-        setTimeout(() => {
-          this.$router.push({
-            path: '/home'
-            // query: {
-            //   username: this.username
-            // }
-          })
-        }, 500)
+        localStorage.setItem('username', this.username)
+        this.$router.push({
+          path: '/home'
+        })
       })
     }
   }

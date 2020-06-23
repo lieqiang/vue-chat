@@ -35,10 +35,12 @@ class Token {
 
   async getTokenFromServer(callBack) {
     const res = await getAccessToken({ username: this.username, password: this.password })
-    if (res.data.token) {
-      setToken(res.data.token, { expires: 7 })
-      callBack && callBack()
+    if (res.data.error_code !== 0) {
+      Toast(res.data.msg)
+      return
     }
+    setToken(res.data.token, { expires: 7 })
+    callBack && callBack()
   }
 }
 

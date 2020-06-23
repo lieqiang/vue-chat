@@ -64,6 +64,7 @@ export default {
     back() {
       window.history.go(-1)
     },
+    // 在另外客户端接收到朋友请求,friendAndVchatRoomID 为自己的id和vchatId,可以查系统消息
     async addToConversations() {
       const params = {
         name: this.userInfo.name,
