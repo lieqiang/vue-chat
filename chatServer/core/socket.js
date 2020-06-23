@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     console.log('sendVerificationMessage')
     const message = new Message()
     message.saveMessage(params)
-    console.log('aaa', params.friendAndVchatRoomID)
+    // console.log('aaa', params.friendAndVchatRoomID)
     socket.to(params.friendAndVchatRoomID).emit('receivingVerificationMessage', params) // 所有房间的客户将收到消息，包括连接到socket的人
   })
 })
