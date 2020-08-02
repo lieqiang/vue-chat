@@ -1,62 +1,68 @@
-const io = require('socket.io')(global.server) // server
+const io = require('socket.io')(global.server)
 const { User } = require('@models/user')
 const { Message } = require('@models/message')
-
+const { addFriend } = require('@models/friendly')
+const { params } = require('../app/api/v1/user')
 const OnlineUser = {}
 io.on('connection', (socket) => {
   socket.on('join', (params) => {
     socket.join(params.roomID, () => {
-      console.log('加入房间', params.name)
-      OnlineUser[params.name] = socket.id // socket.id ???
+      console.log(params.name, '加入了roomid', params.roomID)
+      // console.log('加入房间', params.name)
+      OnlineUser[params.name] = socket.id
       io.in(params.roomID).emit('joined', OnlineUser) // 包括发送者
-      console.log('join', params.roomID, OnlineUser)
+      console.log(params.name, 'join', params.roomID, OnlineUser)
     })
   })
 
   socket.on('agreeAdd', (params) => {
-    let pr = {
-      status: '1',
-      userM: params['userM'] // userM: this.user.id
-    };
-    apiList.setMessageStatus(pr) // 设置消息状态 为 已通过
-    // 通知申请人验证已同意
-    let value = {
-      name: '',
-      mes: `${params.friendName}同意了你的好友请求！`,
-      time: utils.formatTime(new Date()),
-      // avatar: params.userYphoto,
-      nickname: params.friendName,
-      read: [],
-      state: 'friend',
-      type: 'info',
-      status: '1',
-      roomID: `${params.userID}-${params.vchatID}` // userID 发送请求添加好友的p朋友id
-    }
-    // apiList.saveMessage(value)
-    let userParams = {
-      name: params.nickname,
-      // photo: params.avatar,
-      roomID: params.selfAndfriendRoomID,
-      type: 'friend'
-    }
-    let friendParams = {
-      name: params.friendName,
-      // photo: params.userYphoto,
-      roomID: params.selfAndfriendRoomID,
-      type: 'friend'
-    }
-    User.addToConversitionList(params.name, friendParams)
-    User.addToConversitionList(params.friendName, userParams)
-    socket.to(value.roomID).emit('takeValidate', value)
-    // socket.emit('ValidateSuccess', 'ok')
+    console.log('agreeAdd params', params)
+    addFriend(params, (res) => {
+      if (res.code === 0) {
+        const roomID = `${params.senderID}-${params.receiverSystemRoomID.split('-')[1]}`
+        // const roomID = receiverID
+        const pr = {
+          status: '1',
+          senderID: params.senderID
+        }
+        const senderParams = { // 加nickname
+          name: params.senderName,
+          nickname: params.senderNickname,
+          photo: '',
+          roomID: params.senderAndReceiverRoomID,
+          type: 'friend'
+        }
+        const receiverParams = {
+          name: params.receiverName,
+          nickname: params.receiverNickname,
+          photo: '',
+          roomID: params.senderAndReceiverRoomID,
+          type: 'friend'
+        }
+        User.addToConversitionList(senderParams.name, receiverParams)
+        User.addToConversitionList(receiverParams.name, senderParams)
+        console.log('senderParams', senderParams)
+        console.log('receiverParams', receiverParams)
+        const message = new Message()
+        message.setMessageStatus(pr) // 设置消息状态 为 已通过
+        socket.to(roomID).emit('receiveAgreedMsg', receiverParams) // 添加好友方接收消息
+        socket.emit('receiveAgreedSuccess', senderParams) // 同意添加好友方接收消息 .in(params.receiverSystemRoomID)
+      }
+    })
   })
 
   socket.on('sendVerificationMessage', (params) => {
     console.log('sendVerificationMessage')
     const message = new Message()
     message.saveMessage(params)
-    // console.log('aaa', params.friendAndVchatRoomID)
-    socket.to(params.friendAndVchatRoomID).emit('receivingVerificationMessage', params) // 所有房间的客户将收到消息，包括连接到socket的人
+    socket.emit('sendVerificationSuccess')// 添加方(发送验证请求方) .in(roomID)
+    socket.to(params.receiverSystemRoomID).emit('receivingVerificationMessage', params) // 接收方(一人)
+  })
+
+  socket.on('sendMsg', (params) => {
+    const message = new Message()
+    message.saveMessage(params)
+    socket.to(params.roomid).emit('receivingMsg', params)
   })
 })
 

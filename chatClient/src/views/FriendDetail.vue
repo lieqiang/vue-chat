@@ -12,7 +12,7 @@
             round
             width="50"
             height="50"
-            :src="friendInfo.src"
+            src=""
           />
         </template>
         <template #right-icon>
@@ -26,42 +26,64 @@
       <van-cell title="来源" value="搜索" value-class="center" />
     </van-cell-group>
     <div class="add pt-5">
-      <van-button block type="default" @click="addToAddressBooks">添加到通讯录</van-button>
+      <van-button block icon="chat-o" type="default" class="send-button" @click="sendMessages">发送消息</van-button>
     </div>
   </div>
 </template>
 <script>
 import Vue from 'vue'
 import { NavBar, Icon, Button, Cell, CellGroup, Image as VanImage, Toast } from 'vant'
-Vue.use(NavBar).use(Icon).use(Button).use(Cell).use(CellGroup).use(VanImage).use(Toast)
+import { getUserInfo } from '@/api/user'
+Vue.use(NavBar)
+Vue.use(Icon)
+Vue.use(Button)
+Vue.use(Cell)
+Vue.use(CellGroup)
+Vue.use(VanImage)
+Vue.use(Toast)
 
 export default {
-  name: 'SearchDetail',
+  name: 'FriendDetail',
   data() {
     return {
       friendInfo: {
         _id: '',
         name: '',
-        nickname: '',
-        province: '',
-        city: '',
-        town: '',
+        province: {
+          name: ''
+        },
+        city: {
+          name: ''
+        },
+        town: {
+          name: ''
+        },
         src: '',
         signature: ''
       }
     }
   },
   created() {
-    this.friendInfo = this.$route.query
+    const { username } = this.$route.query
+    this.getUserInfo(username)
   },
   methods: {
     back() {
       window.history.go(-1)
     },
-    addToAddressBooks() {
+    async getUserInfo(username) {
+      const res = await getUserInfo({ username })
+      if (res.data.error_code !== 0) {
+        Toast(res.data.msg)
+        return
+      }
+      this.friendInfo = res.data.data
+    },
+    sendMessages() {
       this.$router.push({
-        path: '/sendValidate',
-        query: this.friendInfo
+        path: '/chat',
+        query: {
+        }
       })
     }
   }
@@ -116,5 +138,9 @@ export default {
   .bg {
     height: 5px;
     background-color: #f2f2f2;
+  }
+  .send-button {
+    color: #085aac;
+    font-weight: bold;
   }
 </style>

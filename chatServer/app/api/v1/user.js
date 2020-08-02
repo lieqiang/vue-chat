@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const { RegisterValidator } = require('@validator/validator')
 const { User } = require('@models/user')
+const { findMyfriends } = require('@models/friendly')
 const { Success } = require('@core/http-exception')
 const router = new Router({
   prefix: '/v1/user/'
@@ -90,20 +91,38 @@ router.get('search', async (ctx) => {
   }
 })
 
-// router.get('addToFriendsList', async (ctx) => {
-//   const res = await User.search(txt)
-//   // if (!res || !res.length) {
-//   //   ctx.body = []
-//   // }
-//   // ctx.body = res
-//   // const txt = ctx.request.query.txt
-//   // if (txt) {
-//   //   const res = await User.search(txt)
-//   //   if (!res || !res.length) {
-//   //     ctx.body = []
-//   //   }
-//   //   ctx.body = res
-//   // }
-// })
+router.get('findMyfriends', async(ctx) => {
+  const userid = ctx.request.query.userid
+  if (userid) {
+    const { senderID, receiverID } = await findMyfriends(userid)
+    const data = []
+    console.log('senderID', senderID)
+    console.log('receiverID', receiverID)
+    senderID.forEach(v => {
+      data.push({
+        createDate: v.createDate,
+        nickname: v.receiverID.nickname,
+        photo: v.receiverID.photo,
+        signature: v.receiverID.signature,
+        id: v.receiverID._id,
+        roomid: userid + '-' + v.receiverID._id
+      })
+    })
+    receiverID.forEach(v => {
+      data.push({
+        createDate: v.createDate,
+        nickname: v.senderID.nickname,
+        photo: v.senderID.photo,
+        signature: v.senderID.signature,
+        id: v.senderID._id,
+        roomid: v.senderID._id + '-' + userid
+      })
+    })
+    ctx.body = {
+      error_code: 0,
+      data: data
+    }
+  }
+})
 
 module.exports = router

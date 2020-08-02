@@ -10,7 +10,12 @@
     />
     <div class="wrapper">
       <van-cell-group class="list">
-        <van-cell center v-for="(item, index) in list" :key="index" to="/searchDetail">
+        <van-cell
+          center
+          v-for="(item, index) in list"
+          :key="index"
+          @click="linkToFriendDetail(item)"
+        >
           <template #title>
             <van-image
               round
@@ -22,11 +27,11 @@
           <template #right-icon>
             <div class="right">
               <div class="info">
-                <span class="name">{{ item.nickname || item.name }}</span>
-                <span class="desc">{{ item.signature }}</span>
+                <span class="name">{{ item.senderNickname || item.senderName }}</span>
+                <span class="desc">{{ item.senderSignature }}</span>
               </div>
               <div class="status">
-                <van-button v-if="item.status === '0'" type="primary" size="small">添加</van-button>
+                <van-button v-if="item.status === '0'" type="primary" size="small" @click.stop="addToAddressBooks(item)">添加</van-button>
                 <span v-if="item.status === '1'" class="added">已添加</span>
                 <span v-if="item.status === '2'" class="added">已过期</span>
               </div>
@@ -35,6 +40,10 @@
         </van-cell>
       </van-cell-group>
     </div>
+    <van-empty
+      v-show="!list.length"
+      description="暂无好友申请"
+    />
   </div>
 </template>
 
@@ -42,7 +51,7 @@
 import Vue from 'vue'
 import BScroll from '@better-scroll/core'
 import { mapGetters } from 'vuex'
-import { NavBar, CellGroup, Cell, Image as VanImage, Icon, Button } from 'vant'
+import { NavBar, CellGroup, Cell, Image as VanImage, Icon, Button, Empty, Toast } from 'vant'
 import { getNewFriendsMsg } from '@/api/message'
 Vue.use(NavBar)
 Vue.use(CellGroup)
@@ -50,7 +59,22 @@ Vue.use(Cell)
 Vue.use(VanImage)
 Vue.use(Icon)
 Vue.use(Button)
+Vue.use(Empty)
+Vue.use(Toast)
 export default {
+  name: 'NewFriends',
+  sockets: {
+    receiveAgreedSuccess(params) {
+      this.$store.dispatch('addToConversationsList', params) // 需优化
+      Toast('添加成功')
+      this.$router.push({
+        path: '/friendDetail',
+        query: {
+          username: params.name
+        }
+      })
+    }
+  },
   data() {
     return {
       list: []
@@ -63,6 +87,7 @@ export default {
   },
   created() {
     this.getNewFriendsMsg()
+    this.clearSystemMsg()
   },
   methods: {
     back() {
@@ -74,14 +99,31 @@ export default {
       if (res.data.error_code !== 0) {
         return
       }
-      console.log(this.list)
       this.list = res.data.data
+      console.log(this.list)
       this.$nextTick(() => {
         const wrapper = document.querySelector('.wrapper')
         const scroll = new BScroll(wrapper, { // eslint-disable-line
           click: true
         })
       })
+    },
+    clearSystemMsg() {
+      this.$store.dispatch('clearAdressBooksMessages')
+    },
+    addToAddressBooks(item) {
+      console.log('agreeAdd', item)
+      this.$socket.emit('agreeAdd', item)
+    },
+    linkToFriendDetail(item) {
+      if (item.status === '1') {
+        this.$router.push({
+          path: '/friendDetail',
+          query: {
+            username: item.senderName
+          }
+        })
+      }
     },
     onClickRight() {
     }

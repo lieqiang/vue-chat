@@ -6,14 +6,6 @@
           <span>王麻子</span>
         </template>
       </van-nav-bar>
-      <!-- <nav-bar
-        :has-slot="true"
-        path="/questions/my-questions"
-        name="更多"
-      >
-        <span class="question-tit" @click="emitEvent">李曾</span>
-        <span class="question-sts">在线</span>
-      </nav-bar> -->
       <div :style="{ height: height + 'px' }" class="chat-container" @click="slideup">
         <div ref="wrapper" :style="{ height: height + 'px' }" :class="{'pc-bd': deviceWidth === '750px'}" class="chat-container-body" @touchstart="start" @touchend="end">
           <div v-if="isMsgLoadingShow" class="loading">
@@ -39,7 +31,7 @@
               :ref="'d' + item.id"
               :class="{mine: item.op_id === 0, other: item.op_id !== 0, center: item.info == 1, recall: item.op_id === 'cancel'}"
             >
-              <div class="info-time">{{ item.sts_time | timeFilter('MDHM') }}</div>
+              <div class="info-time">{{ item.time | timeFilter('MDHM') }}</div>
               <div class="other-desc">
                 <div v-show="item.op_id !== 'cancel' && item.op_id != '966530'" class="other-face">
                   <span :class="[item.op_id === 0 ? 'user-avatar' : 'mine-avatar', 'chat-avatar']"/>
@@ -93,16 +85,17 @@
 </template>
 
 <script>
-import { PopupMixin } from '@/mixins/width'
-import 'viewerjs/dist/viewer.css'
-import Viewer from 'v-viewer'
-import { NavBar, Toast, Button, Loading } from 'vant'
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
+import { PopupMixin } from '@/mixins/width'
+import BScroll from '@better-scroll/core'
+import PullDown from '@better-scroll/pull-down'
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+import { NavBar, Toast, Button, Loading } from 'vant'
 import msgItem from './msgItem'
 import Face from '@/components/face'
 import { EMOJI_LIST } from '@/utils/face'
-import BScroll from '@better-scroll/core'
-import PullDown from '@better-scroll/pull-down'
 BScroll.use(PullDown)
 Vue.use(Viewer)
 Vue.use(Toast).use(NavBar).use(Button).use(Loading)
@@ -127,31 +120,31 @@ export default {
       viewer: null,
       msgList: [
         {
-          txt: '按照此前我们报道过的消息，今年的iPhone12系列采用A14处理器已经毫无悬念。该处理器将会使用台积电5nm工艺，而新一代的iPad/iPad Pro则大概率会用上A14X处理器，Apple Watch方面的话，，则是最新的S6处理器。',
-          sts_time: 1588668720014,
+          message: '按照此前我们报道过的消息，今年的iPhone12系列采用A14处理器已经毫无悬念。该处理器将会使用台积电5nm工艺，而新一代的iPad/iPad Pro则大概率会用上A14X处理器，Apple Watch方面的话，，则是最新的S6处理器。',
+          time: 1588668720014,
           ques_id: 201909260661,
           op_id: 0,
           id: 201909260343
         },
         {
-          txt: '_fb10_fa4_fa4_fb11_fb11',
-          sts_time: 1588568720014,
+          message: '_fb10_fa4_fa4_fb11_fb11',
+          time: 1588568720014,
           img: null,
           ques_id: 201909260661,
           op_id: 0,
           id: 201909260344
         },
         {
-          txt: '原标题：苹果A18处理器曝光，将采用2nm工艺苹果公司在CPU上的研发进度一直以来都领先着整个手机行业，尤其是在先进工艺的采用方面。除了今年的A14处理器会用上5nm工艺外，根据最新消息透露，未来几年苹果的CPU路线图已经制定完成，如无意外的话，2024年就可以看到2nm工艺的A18处理器了，而这几年中苹果处理器的IPC将会每年上升15-30%。',
-          sts_time: 1588668730014,
+          message: '原标题：苹果A18处理器曝光，将采用2nm工艺苹果公司在CPU上的研发进度一直以来都领先着整个手机行业，尤其是在先进工艺的采用方面。除了今年的A14处理器会用上5nm工艺外，根据最新消息透露，未来几年苹果的CPU路线图已经制定完成，如无意外的话，2024年就可以看到2nm工艺的A18处理器了，而这几年中苹果处理器的IPC将会每年上升15-30%。',
+          time: 1588668730014,
           img: null,
           ques_id: 201909260661,
           op_id: 1,
           id: 201909260345
         },
         {
-          txt: '为了满足这些场景，它不仅支持惯性滚动、边界回弹、滚动条淡入淡出等效果的灵活配置，让滚动更加流畅，同时还提供了很多 API 方法和事件，以便我们更快地实现滚动场景下的需求，如下拉刷新、上拉加载。由于它基于原生 JavaScript 实现，不依赖任何框架，所以既可以原生 JavaScript 引用，也可以与目前前端 MVVM 框架结合使用，比如，其官网上的示例就是与 Vue 的结合。',
-          sts_time: 1588668730014,
+          message: '为了满足这些场景，它不仅支持惯性滚动、边界回弹、滚动条淡入淡出等效果的灵活配置，让滚动更加流畅，同时还提供了很多 API 方法和事件，以便我们更快地实现滚动场景下的需求，如下拉刷新、上拉加载。由于它基于原生 JavaScript 实现，不依赖任何框架，所以既可以原生 JavaScript 引用，也可以与目前前端 MVVM 框架结合使用，比如，其官网上的示例就是与 Vue 的结合。',
+          time: 1588668730014,
           img: null,
           ques_id: 201909260661,
           op_id: 1,
@@ -165,11 +158,13 @@ export default {
       isFaceShow: false,
       reg: /(^\s*)|(\s*$)/g,
       txtReg: /\[[^(\)|\[)]*\]+?$/, // eslint-disable-line
-      isSendBtnShow: false
+      isSendBtnShow: false,
+      // 新增
+      roomid: ''
     }
   },
   computed: {
-
+    ...mapGetters(['userInfo'])
   },
   watch: {
     chatText(n, o) {
@@ -196,7 +191,9 @@ export default {
     }
   },
   created() {
-
+    const { roomid } = this.$route.query
+    this.roomid = roomid
+    // this.getHistoryMsg(roomid)
   },
   mounted() {
     this.$nextTick(() => {
@@ -213,6 +210,10 @@ export default {
     // 监听断开连接，函数
     disconnect() {
       console.log('断开服务器连接')
+    },
+    receivingMsg(params) {
+      console.log('aa', params)
+      this.msgList.push(params)
     }
   },
   methods: {
@@ -263,13 +264,13 @@ export default {
         this.scroll.enable()
       }
     },
-    addNewMsg(newMsg) {
-      this.msgList.push(newMsg)
-      this.$nextTick(() => {
-        this.scroll.refresh() // 必须
-        this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
-      })
-    },
+    // addNewMsg(newMsg) {
+    //   this.msgList.push(newMsg)
+    //   this.$nextTick(() => {
+    //     this.scroll.refresh() // 必须
+    //     this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
+    //   })
+    // },
     showImageView(src) {
       this.imgSrc = src
       const viewer = this.$el.querySelector('#view-images').$viewer
@@ -363,6 +364,18 @@ export default {
       text = text.replace(/>+/gim, '&gt;')
       text = text.replace(/\n+/gim, '<br />')
       // socket
+      const params = {
+        message: text,
+        name: this.userInfo.name,
+        nickname: this.userInfo.nickname,
+        roomid: this.roomid,
+        senderID: this.userInfo.id,
+        style: 'txt',
+        read: [this.userInfo.name],
+        time: new Date().getTime()
+      }
+      this.$socket.emit('sendMsg', params)
+      debugger
     },
     triggerUpload() {
       this.$refs.uploadPic.click()

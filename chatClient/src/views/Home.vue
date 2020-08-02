@@ -9,7 +9,7 @@
     <div class="wrapper">
       <div class="content">
         <van-cell-group class="list">
-          <van-cell center v-for="(item, index) in conversationsList" :key="index" to="/chat">
+          <van-cell center v-for="(item, index) in conversationsList" :key="index" @click="linkToChat(item.roomid)">
             <template #title>
               <van-image
                 round
@@ -20,7 +20,7 @@
             </template>
             <template #right-icon>
               <div class="right">
-                <span class="name">{{ item.nickname }}</span>
+                <span class="name">{{ item.nickname || item.name }}</span>
                 <span class="desc">{{ item.signature }}</span>
               </div>
             </template>
@@ -42,10 +42,12 @@
 </template>
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import { NavBar, Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
 import BScroll from '@better-scroll/core'
 import Search from '@/components/Search'
 import Add from '@/components/Add'
+import { findMyfriends } from '@/api/user'
 Vue.use(NavBar).use(Icon).use(Cell).use(CellGroup).use(Toast).use(VanImage)
 export default {
   name: 'Home',
@@ -57,77 +59,14 @@ export default {
     return {
       isShow: false,
       isAddShow: false,
-      conversationsList: [
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
-        },
-        {
-          nickname: '徐峥',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '代码在囧途，也要写到底'
-        },
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
-        },
-        {
-          nickname: '马云',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '让天下没有难写的代码'
-        },
-        {
-          nickname: '刘涛',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '如约而至，不负姊妹欢乐颂'
-        },
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
-        },
-        {
-          nickname: '马云',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '让天下没有难写的代码'
-        },
-        {
-          nickname: '刘涛',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '如约而至，不负姊妹欢乐颂'
-        },
-        {
-          nickname: '马云',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '让天下没有难写的代码'
-        },
-        {
-          nickname: '刘涛',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '如约而至，不负姊妹欢乐颂'
-        },
-        {
-          nickname: '邹烈强',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '这些都是测试数据，实际使用请严格按照该格式返回'
-        },
-        {
-          nickname: '马云',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '让天下没有难写的代码'
-        },
-        {
-          nickname: '刘涛',
-          src: 'https://img.yzcdn.cn/vant/cat.jpeg',
-          signature: '如约而至，不负姊妹欢乐颂'
-        }
-      ]
+      conversationsList: []
     }
   },
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
   created() {
-
+    this.findMyfriends()
   },
   mounted() {
     const wrapper = document.querySelector('.wrapper')
@@ -142,8 +81,21 @@ export default {
     cancel() {
       this.isShow = false
     },
-    add() {
-
+    async findMyfriends() {
+      const res = await findMyfriends({ userid: this.userInfo.id })
+      if (res.data.error_code !== 0) {
+        this.conversationsList = []
+        return
+      }
+      this.conversationsList = res.data.data
+    },
+    linkToChat(roomid) {
+      this.$router.push({
+        path: '/chat',
+        query: {
+          roomid
+        }
+      })
     }
   }
 }

@@ -1,7 +1,4 @@
 export default {
-  // SET_USER_NAME(state, username) {
-  //   state.username = username
-  // },
   SET_USER_INFO(state, data) {
     state.userInfo = data
   },
@@ -14,7 +11,7 @@ export default {
   SET_CONVERSATIONS_LIST(state, data) {
     state.conversationsList = data
   },
-  ADD_TO_CONVEASATIONS_LIST(state, data) {
+  ADD_TO_CONVERSATIONS_LIST(state, data) {
     state.conversationsList.push(data)
   },
   SET_ONLINE_USER(state, data) {
@@ -22,6 +19,9 @@ export default {
   },
   ADD_ADRESS_BOOKS_MESSAGES(state, msg) {
     state.adressBooksMessages.push(msg)
+  },
+  CLEAR_ADRESS_BOOKS_MESSAGES(state) {
+    state.adressBooksMessages = []
   },
   SET_UN_READ(state, data) {
     if (data.clear) {

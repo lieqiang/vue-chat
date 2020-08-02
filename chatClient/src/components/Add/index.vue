@@ -13,7 +13,7 @@
         v-for="(item, index) in result"
         clickable
         :key="index"
-        :title="item.name"
+        :title="item.nickname || item.name"
         :label="item.signature"
         @click="linkToSearchDetail(item)"
       />

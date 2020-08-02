@@ -8,14 +8,23 @@
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 export default {
+  data() {
+    return {
+      adressBooks: []
+    }
+  },
   sockets: {
     joined(OnlineUser) {
-      console.log('客户端加入了', OnlineUser)
+      console.log('joined', OnlineUser)
       // this.$store.commit('setOnlineUser', OnlineUser)
     },
     receivingVerificationMessage(data) {
       console.log(data)
       this.$store.dispatch('addAdressBooksMessages', data)
+    },
+    receiveAgreedMsg(params) {
+      console.log('对方已同意你的好友申请')
+      this.$store.dispatch('addToConversationsList', params) // 需优化
     }
   },
   computed: {
@@ -24,19 +33,17 @@ export default {
   watch: {
     conversationsList(newList, oldList) {
       this.conversationsList.forEach(item => {
-        const params = {
-          name: this.userInfo.name,
-          time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
-          roomID: item.roomID
+        if (!this.adressBooks.includes(item.name)) {
+          const params = {
+            name: this.userInfo.name,
+            time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+            roomID: item.roomID
+          }
+          this.$socket.emit('join', params)
+          this.adressBooks.push(item.name)
+          console.log('客户端加入了', params)
+          console.log('conversationsList', newList)
         }
-        this.$socket.emit('join', params)
-        console.log('params-- ', params)
-        // let room = {
-        //   roomid: item.roomID,
-        //   offset: 1,
-        //   limit: 200
-        // }
-        // this.$socket.emit('getHistoryMessages', room) 是否有必要？？？
       })
     }
   },
@@ -48,11 +55,11 @@ export default {
 </script>
 <style>
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
-  color: #2c3e50;
+  /* color: #2c3e50; */
 }
 
 /* #nav {

@@ -25,7 +25,7 @@
           </template>
           <template #right-icon>
             <div class="right">
-              <span class="name">{{ cell.name }}</span>
+              <span class="name">{{ cell.nickname || cell.name }}</span>
             </div>
           </template>
         </van-cell>
@@ -91,6 +91,7 @@ export default {
         }
         map[key].items.push({
           name: item.name,
+          nickname: item.nickname,
           id: item.id
         })
       })

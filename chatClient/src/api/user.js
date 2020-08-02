@@ -54,6 +54,14 @@ export function search(query) {
   })
 }
 
+export function findMyfriends(query) {
+  return request({
+    url: '/user/findMyfriends',
+    method: 'get',
+    params: query
+  })
+}
+
 // export function addToFriendsList(query) {
 //   return request({
 //     url: '/user/addToFriendsList',

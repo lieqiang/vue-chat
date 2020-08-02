@@ -29,14 +29,21 @@ export default {
         console.log(res)
         const info = res.data.data
         const roomID = `${state.userInfo.id}-${info.id}`
-        const vchatInfo = Object.assign({ }, info, { type: 'vchat' }, { roomID })
-        commit('ADD_TO_CONVEASATIONS_LIST', vchatInfo)
+        console.log('vchat-roomID', roomID)
+        const vchatInfo = Object.assign({ }, info, { type: 'vchat' }, { roomID }) // 这里可以不需要写进 conversationsList 里面
+        commit('ADD_TO_CONVERSATIONS_LIST', vchatInfo) // CONVEASATIONS_LIST 写进路由里面 不写 homepage
         commit('SET_VCHAT_INFO', vchatInfo)
         resolve(res)
       })
     })
   },
-  addAdressBooksMessages({ commit, state }, msg) {
+  addToConversationsList({ commit }, data) {
+    commit('ADD_TO_CONVERSATIONS_LIST', data)
+  },
+  addAdressBooksMessages({ commit }, msg) {
     commit('ADD_ADRESS_BOOKS_MESSAGES', msg)
+  },
+  clearAdressBooksMessages({ commit }) {
+    commit('CLEAR_ADRESS_BOOKS_MESSAGES')
   }
 }

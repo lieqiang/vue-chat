@@ -37,12 +37,12 @@ export default {
   },
   watch: {
     adressBooksMessages(newVal, oldVal) {
-      if (!newVal.length) {
-        this.count = ''
-        return
-      }
-      this.count = newVal.length > 100 ? '99+' : newVal.length
+      this.getMessagesCount(newVal)
     }
+  },
+  created() {
+    console.log('created')
+    this.getMessagesCount(this.adressBooksMessages)
   },
   methods: {
     activeColor(name) {
@@ -51,6 +51,13 @@ export default {
         return '#07c160'
       }
       return ''
+    },
+    getMessagesCount(newVal) {
+      if (!newVal.length) {
+        this.count = ''
+        return
+      }
+      this.count = newVal.length > 100 ? '99+' : newVal.length
     }
   }
 }

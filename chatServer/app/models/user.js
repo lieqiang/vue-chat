@@ -66,11 +66,6 @@ class User {
     return await users.find({name: 'Vchat'})
   }
 
-  // 添加一个新的 好友到会话列表
-  static async addToConversitionList(userName, params) {
-    return await users.update({ name: userName }, {$push: { conversationsList: params }})
-  }
-
   static async search(keyword) {
     let key = new RegExp(keyword)
     let params = [
@@ -92,7 +87,8 @@ class User {
         }
       }, { // 指定返回的值
         _id: 1,
-        name: 1, // nickname
+        name: 1,
+        nickname: 1,
         photo: 1,
         signature: 1,
         sex: 1,
@@ -101,6 +97,11 @@ class User {
         town: 1
       }).limit(10).sort({'name': 1})
     }
+  }
+
+  // 添加一个新的 好友到会话列表
+  static async addToConversitionList(userName, params) {
+    return await users.updateOne({ name: userName }, {$push: { conversationsList: params }})
   }
 }
 

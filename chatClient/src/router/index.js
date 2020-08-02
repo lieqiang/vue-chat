@@ -70,6 +70,16 @@ const routes = [
     name: 'SearchDetail',
     component: () => import(/* webpackChunkName: "searchDetail" */ '@/views/SearchDetail.vue')
   },
+  {
+    path: '/sendValidate',
+    name: 'SendValidate',
+    component: () => import(/* webpackChunkName: "sendValidate" */ '@/views/SendValidate.vue')
+  },
+  {
+    path: '/friendDetail',
+    name: 'FriendDetail',
+    component: () => import(/* webpackChunkName: "friendDetail" */ '@/views/FriendDetail.vue')
+  },
   { path: '*', redirect: '/404', hidden: true }
 ]
 
