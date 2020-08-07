@@ -4,3 +4,4 @@ node_modules/js-cookie/package.json
 node_modules/js-cookie/README.md
 node_modules/js-cookie/SERVER_SIDE.md
 node_modules/js-cookie/src/js.cookie.js
+chatClient/yarn.lock

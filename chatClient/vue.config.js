@@ -21,14 +21,23 @@ module.exports={
           }
       },
   },
-  chainWebpack:(config)=>{
-    config.resolve.alias
-    //set第一个参数：设置的别名，第二个参数：设置的路径
-    .set("@",resolve("./src"))
-    // .set("components",resolve("./src/components"))
-    // .set("assets",resolve("./src/assets"))
-    // .set("views",resolve("./src/views"))
-    // .set("network",resolve("./src/network"))
-    //注意 store 和 router 没必要配置
+  chainWebpack:(config) => {
+    config.resolve.alias.set("@",resolve("./src")), // 别名
+    config.module
+    .rule('svg')
+    .uses.clear()
+    config.module
+    .rule('svg1')
+    .test(/\.svg$/)
+    .use('svg-sprite')
+      .loader('svg-sprite-loader')
+      .options({
+        symbolId: 'icon-[name]'
+      })
+      .end()
+    .include
+      .add(resolve('src/icons'))
+      .end()
+
   }
 }
