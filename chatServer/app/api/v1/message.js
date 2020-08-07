@@ -6,12 +6,23 @@ const router = new Router({
 })
 
 router.get('getNewFriendsMsg', async (ctx) => {
-  const roomID = ctx.request.query.roomID
-  console.log('roomId', roomID)
+  const roomid = ctx.request.query.roomid
+  console.log('roomId', roomid)
   const message = new Message()
-  const res = await message.getSystemMessages(roomID)
+  const res = await message.getSystemMessages(roomid)
+  ctx.body = {
+    error_code: 0,
+    data: res
+  }
+})
+
+router.get('getHistoryMsg', async (ctx) => {
+  const roomid = ctx.request.query.roomid
+  console.log('roomId', roomid)
+  const message = new Message()
+  const res = await message.getHistoryMsg(roomid)
   // if (!res.length) {
-  //   throw new Success('获取系统消息失败', -1)
+  //   throw new Success('获取历史消息失败', -1)
   // }
   ctx.body = {
     error_code: 0,

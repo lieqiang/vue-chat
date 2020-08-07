@@ -7,3 +7,11 @@ export function getNewFriendsMsg(query) {
     params: query
   })
 }
+
+export function getHistoryMsg(query) {
+  return request({
+    url: '/message/getHistoryMsg',
+    method: 'get',
+    params: query
+  })
+}

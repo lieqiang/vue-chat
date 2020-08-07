@@ -6,13 +6,13 @@ const messagesSchema = new Schema({
   senderNickname: String, // 用户昵称
   senderSignature: String, // 个性签名
   senderID: String, // 用户id
-  time: String, // 时间
+  time: Number, // 时间戳
   message: String, // 消息
   read: Array, // 是否已读 0/1
   groupId: String, // 加入群聊id
   groupName: String, // 加入群聊名称
   // groupPhoto: String, // 加入群聊头像
-  senderAndReceiverRoomID: String,
+  roomid: String,
   receiverID: String, // 好友id
   receiverName: String, // 好友用户名
   receiverNickname: String,
@@ -30,10 +30,26 @@ class Message {
   async saveMessage(params) {
     return await messages.create(params)
   }
-  async getSystemMessages(roomID) {
+  async getSystemMessages(roomid) {
     try {
-      return await messages.find({ receiverSystemRoomID: roomID })
+      return await messages.find({ receiverSystemRoomID: roomid })
       .sort({ 'time': -1 })
+      .skip(0)
+      .limit(100)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  async getHistoryMsg(roomid) {
+    try {
+      return await messages.find({
+        roomid: roomid,
+        type: {
+          '$ne': 'validate'
+        }
+      })
+      .sort({ 'theDate': -1 })
       .skip(0)
       .limit(100)
     } catch(err) {

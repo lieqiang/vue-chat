@@ -8,7 +8,7 @@
   <van-swipe id="swipe" ref="swipe" indicator-color="#666" @change="onChange">
     <van-swipe-item v-for="(item, index) in faceList" :key="index">
       <div class="item-txt mousewheel">
-        <span v-for="(cell, index) in item" :key="index" class="item mousewheel" @click.stop="faceChange(cell.tl)">
+        <span v-for="(cell, index) in item" :key="index" class="item mousewheel" @click.stop="faceChange(cell)">
           <span :id="'icn_' + cell.id" class="iconf mousewheel"/>
         </span>
         <span class="item mousewheel">
@@ -145,7 +145,6 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 15px 0 23px 0;
-  // margin: 0 1%;
 }
 .item {
   text-align: center;

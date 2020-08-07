@@ -29,12 +29,12 @@
               v-for="(item,index) in msgList"
               :key="index"
               :ref="'d' + item.id"
-              :class="{mine: item.op_id === 0, other: item.op_id !== 0, center: item.info == 1, recall: item.op_id === 'cancel'}"
+              :class="{mine: item.senderID === userInfo.id, other: item.senderID !== userInfo.id, center: item.info == 1}"
             >
               <div class="info-time">{{ item.time | timeFilter('MDHM') }}</div>
               <div class="other-desc">
-                <div v-show="item.op_id !== 'cancel' && item.op_id != '966530'" class="other-face">
-                  <span :class="[item.op_id === 0 ? 'user-avatar' : 'mine-avatar', 'chat-avatar']"/>
+                <div v-show="item.senderID !== 'cancel' && item.senderID != '966530'" class="other-face">
+                  <span :class="[item.senderID !== userInfo.id ? 'user-avatar' : 'mine-avatar', 'chat-avatar']"/>
                 </div>
                 <span class="other-info" @contextmenu="stop">
                   <msg-item :item="item" :quesid="questionInfo.quesid" @image-view-change="showImageView"/>
@@ -47,13 +47,13 @@
       <!-- 工具条 -->
       <div v-show="questionInfo.sts != 2" :style="{'width': deviceWidth, 'margin': '0 auto', 'bottom': isFaceShow ? '189px' : '0'}" class="chat-container-footer">
         <div :class="[deviceWidth === '750px' ? 'pc-bd pc-b-t' : 'b-t']" class="chat-bottom-bar" @click.stop="stop">
-          <div :class="[deviceWidth === '750px' ? 'pc-b-b' : 'b-b']" class="bar-left">
+          <div :class="[deviceWidth === '750px' ? 'pc-b-b' : 'b-b']" class="msg-input-wrap">
             <input ref="input" v-model="chatText" type="text" class="msg-input" @focus.stop="focus">
           </div>
           <div class="bar-emoji" @click="changeFaceStatus">
             <svg-icon icon-class="face" class="face-icon" />
           </div>
-          <div class="bar-img">
+          <div class="bar-send-img">
             <van-icon name="add-o" @click="triggerUpload">
               <input
                 id="uploadPic"
@@ -65,8 +65,8 @@
               >
             </van-icon>
           </div>
-          <div :class="{ 'no-btn': !isSendBtnShow }" class="submit-btn">
-            <van-button v-show="isSendBtnShow" class="send-btn" size="mini" type="danger" @click="sendMsg">发送</van-button>
+          <div :class="{ 'no-btn': !isSendBtnShow }" class="send-msg-wrap">
+            <van-button v-show="isSendBtnShow" class="send-msg-btn" size="mini" type="danger" @click="sendMsg">发送</van-button>
           </div>
         </div>
       </div>
@@ -96,6 +96,7 @@ import { NavBar, Toast, Button, Loading } from 'vant'
 import msgItem from './msgItem'
 import Face from '@/components/face'
 import { EMOJI_LIST } from '@/utils/face'
+import { getHistoryMsg } from '@/api/message'
 BScroll.use(PullDown)
 Vue.use(Viewer)
 Vue.use(Toast).use(NavBar).use(Button).use(Loading)
@@ -118,39 +119,7 @@ export default {
       uploding: false,
       height: '100%',
       viewer: null,
-      msgList: [
-        {
-          message: '按照此前我们报道过的消息，今年的iPhone12系列采用A14处理器已经毫无悬念。该处理器将会使用台积电5nm工艺，而新一代的iPad/iPad Pro则大概率会用上A14X处理器，Apple Watch方面的话，，则是最新的S6处理器。',
-          time: 1588668720014,
-          ques_id: 201909260661,
-          op_id: 0,
-          id: 201909260343
-        },
-        {
-          message: '_fb10_fa4_fa4_fb11_fb11',
-          time: 1588568720014,
-          img: null,
-          ques_id: 201909260661,
-          op_id: 0,
-          id: 201909260344
-        },
-        {
-          message: '原标题：苹果A18处理器曝光，将采用2nm工艺苹果公司在CPU上的研发进度一直以来都领先着整个手机行业，尤其是在先进工艺的采用方面。除了今年的A14处理器会用上5nm工艺外，根据最新消息透露，未来几年苹果的CPU路线图已经制定完成，如无意外的话，2024年就可以看到2nm工艺的A18处理器了，而这几年中苹果处理器的IPC将会每年上升15-30%。',
-          time: 1588668730014,
-          img: null,
-          ques_id: 201909260661,
-          op_id: 1,
-          id: 201909260345
-        },
-        {
-          message: '为了满足这些场景，它不仅支持惯性滚动、边界回弹、滚动条淡入淡出等效果的灵活配置，让滚动更加流畅，同时还提供了很多 API 方法和事件，以便我们更快地实现滚动场景下的需求，如下拉刷新、上拉加载。由于它基于原生 JavaScript 实现，不依赖任何框架，所以既可以原生 JavaScript 引用，也可以与目前前端 MVVM 框架结合使用，比如，其官网上的示例就是与 Vue 的结合。',
-          time: 1588668730014,
-          img: null,
-          ques_id: 201909260661,
-          op_id: 1,
-          id: 201909260345
-        }
-      ],
+      msgList: [],
       scroll: null,
       beforePullDown: true,
       isPullingDown: false,
@@ -159,7 +128,6 @@ export default {
       reg: /(^\s*)|(\s*$)/g,
       txtReg: /\[[^(\)|\[)]*\]+?$/, // eslint-disable-line
       isSendBtnShow: false,
-      // 新增
       roomid: ''
     }
   },
@@ -178,7 +146,9 @@ export default {
     },
     msgList() {
       if (!this.isInit) {
-        this.refresh()
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
       }
     },
     isFaceShow(current, prev) {
@@ -193,35 +163,42 @@ export default {
   created() {
     const { roomid } = this.$route.query
     this.roomid = roomid
-    // this.getHistoryMsg(roomid)
+    this.getHistoryMsg(roomid)
   },
   mounted() {
     this.$nextTick(() => {
       this.calculateHeight()
-      this.initScroll()
     })
   },
   sockets: {
-    connect() {
-      // 获取每台客服端生成的id
-      this.websocketid = this.$socket.id
-      console.log('链接服务器')
-    },
-    // 监听断开连接，函数
-    disconnect() {
-      console.log('断开服务器连接')
-    },
     receivingMsg(params) {
-      console.log('aa', params)
+      console.log('收到新消息', params)
       this.msgList.push(params)
+    },
+    sendMsgSuccess(params) {
+      console.log('发送消息成功', params)
+      this.chatText = ''
+      this.msgList.push(params)
+      this.$nextTick(() => {
+        this.scroll.refresh()
+        this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
+      })
     }
   },
   methods: {
+    async getHistoryMsg(roomid) {
+      const res = await getHistoryMsg({ roomid })
+      if (res.data.error_code !== 0) {
+        Toast(res.data.msg)
+        return
+      }
+      this.msgList = res.data.data
+      this.$nextTick(() => {
+        this.initScroll()
+      })
+    },
     back() {
       window.history.go(-1)
-    },
-    emitEvent() {
-      this.$socket.emit('otherevent', 'from client')
     },
     iosResizeHandle() {
       const msgInputDom = document.querySelector('.msg-input')
@@ -329,8 +306,8 @@ export default {
         this.isFaceShow = false
       }
     },
-    handleSelectFace(id) {
-      this.chatText = this.chatText + '[' + id + ']' // 服务器发送内容
+    handleSelectFace(item) {
+      this.chatText = this.chatText + '[' + item.txt + ']' // 服务器发送内容
     },
     deleteText() {
       if (!this.chatText) {
@@ -358,12 +335,23 @@ export default {
         Toast('单次聊天内容文字长度不能超过300字')
         return
       }
-      const newChatText = JSON.parse(JSON.stringify(this.chatText))
-      let text = newChatText.replace(/\[|]/g, '') // eslint-disable-line
+      let text = JSON.parse(JSON.stringify(this.chatText))
+      const reg1 = /\[[\u4e00-\u9fa5_a-zA-Z]+\]/g
+      const reg2 = /\[[\u4e00-\u9fa5_a-zA-Z]+\]/
+      const matchedGroup = text.match(reg1)
+      if (matchedGroup && matchedGroup.length > 0) {
+        for (var i = 0; i < matchedGroup.length; i++) {
+          for (var j = 0; j < this.face.length; j++) {
+            if (matchedGroup[i] === `[${this.face[j].txt}]`) {
+              text = text.replace(reg2, this.face[j].reg)
+              break
+            }
+          }
+        }
+      }
       text = text.replace(/<+/gim, '&lt;')
       text = text.replace(/>+/gim, '&gt;')
       text = text.replace(/\n+/gim, '<br />')
-      // socket
       const params = {
         message: text,
         name: this.userInfo.name,
@@ -375,7 +363,6 @@ export default {
         time: new Date().getTime()
       }
       this.$socket.emit('sendMsg', params)
-      debugger
     },
     triggerUpload() {
       this.$refs.uploadPic.click()
@@ -444,8 +431,8 @@ export default {
       padding: 9px 8px;
       position: relative;
       /deep/ .iconf {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
       }
     }
     /deep/ img {
@@ -480,8 +467,8 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        .mine-avatar {
-          background: url(../../assets/mine.jpg) no-repeat;
+        .user-avatar {
+          background: url(../../assets/user.jpg) no-repeat;
           background-size: contain;
         }
       }
@@ -541,8 +528,8 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        .user-avatar {
-          background: url(../../assets/user.jpg) no-repeat;
+        .mine-avatar {
+          background: url(../../assets/mine.jpg) no-repeat;
           background-size: cover;
         }
       }
@@ -643,13 +630,14 @@ export default {
       }
     }
   }
-  .submit-btn {
+  .send-msg-wrap {
     text-align: center;
     cursor: pointer;
     font-size: 12px;
     height: 25px;
     text-align: center;
     line-height: 25px;
+    margin: 0 10px 0 5px;
   }
 }
 .pb-20 {
@@ -708,12 +696,6 @@ export default {
   position: absolute;
   z-index: 0;
 }
-@media screen and (max-width: 767px) {
-  .other-info {
-    max-width: 100%;
-    flex: 1;
-  }
-}
 .user-select {
   user-select: none;
 }
@@ -721,7 +703,7 @@ export default {
   position: relative;
 }
 
-.bar-left {
+.msg-input-wrap {
   flex: 1;
   padding-bottom: 5px;
   .msg-input {
@@ -736,21 +718,21 @@ export default {
 }
 .bar-emoji {
   width: 25px;
+  display: flex;
+  align-items: center;
   margin-left: 5px;
 }
-.bar-img {
+.bar-send-img {
   width: 25px;
+  display: flex;
+  align-items: center;
   margin-left: 4px;
   height: 25px;
-  margin-top: 2px;
   margin-left: 4px;
 }
 .van-icon-add-o {
   font-size: 23px;
   color:#bfcbd9;
-}
-.submit-btn {
-  margin: 0 10px 0 5px;
 }
 .no-btn {
   margin: 0 8px 0 0;

@@ -1,6 +1,4 @@
 <script>
-// import store from '@/store'
-// import { isEmpty } from '@/utils'
 import { EMOJI_LIST } from '@/utils/face'
 export default {
   name: 'TxtItem',
@@ -21,16 +19,6 @@ export default {
       emojiList: EMOJI_LIST
     }
   },
-  // methods: {
-  //   linkToEvaluation(quesid) {
-  //     this.$router.push({
-  //       path: '/questions/evaluation',
-  //       query: {
-  //         quesid: this.quesid
-  //       }
-  //     })
-  //   }
-  // },
   render: function(h) {
     // var _this = this
     // 撤回消息
@@ -44,28 +32,6 @@ export default {
     //         },
     //         attrs: {
     //           class: 're-edit-txt'
-    //         }
-    //       }, this.$slots.default)
-    //     ]
-    //   )
-    // }
-    // 满意度调查
-    // if (this.item.op_id === 966530) {
-    //   return h(
-    //     'span',
-    //     [
-    //       h('a', {
-    //         domProps: {
-    //           innerHTML: _this.item.txt
-    //         },
-    //         attrs: {
-    //           class: 'txt-link',
-    //           href: 'javascript:void(0)'
-    //         },
-    //         on: {
-    //           click: () => {
-    //             this.linkToEvaluation()
-    //           }
     //         }
     //       }, this.$slots.default)
     //     ]

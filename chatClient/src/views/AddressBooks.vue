@@ -14,7 +14,7 @@
       </van-cell>
       <template v-for="(item, index) in addressBooks">
         <van-index-anchor :key="index" :index="item.title" />
-        <van-cell center v-for="(cell, idx) in item.items" :key="idx" to="/chat">
+        <van-cell center v-for="(cell, idx) in item.items" :key="idx" @click="linkToChat(cell.roomid)">
           <template #title>
             <van-image
               round
@@ -92,7 +92,8 @@ export default {
         map[key].items.push({
           name: item.name,
           nickname: item.nickname,
-          id: item.id
+          id: item.id,
+          roomid: item.roomid
         })
       })
       // 为了得到有序列表，我们需要处理 map
@@ -113,6 +114,14 @@ export default {
       const newFriendIndex = ['#']
       this.indexList = newFriendIndex.concat(indexList)
       return ret
+    },
+    linkToChat(roomid) {
+      this.$router.push({
+        path: '/chat',
+        query: {
+          roomid
+        }
+      })
     }
   }
 }
