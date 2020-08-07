@@ -37,7 +37,7 @@ export default {
           const params = {
             name: this.userInfo.name,
             time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
-            roomID: item.roomID
+            roomid: item.roomid
           }
           this.$socket.emit('join', params)
           this.adressBooks.push(item.name)

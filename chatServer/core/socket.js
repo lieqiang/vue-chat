@@ -6,12 +6,11 @@ const { params } = require('../app/api/v1/user')
 const OnlineUser = {}
 io.on('connection', (socket) => {
   socket.on('join', (params) => {
-    socket.join(params.roomID, () => {
-      console.log(params.name, '加入了roomid', params.roomID)
-      // console.log('加入房间', params.name)
+    socket.join(params.roomid, () => {
+      console.log(params.name, '加入了roomid', params.roomid)
       OnlineUser[params.name] = socket.id
-      io.in(params.roomID).emit('joined', OnlineUser) // 包括发送者
-      console.log(params.name, 'join', params.roomID, OnlineUser)
+      io.in(params.roomid).emit('joined', OnlineUser) // 包括发送者
+      console.log(params.name, 'join', params.roomid, OnlineUser)
     })
   })
 
@@ -19,8 +18,7 @@ io.on('connection', (socket) => {
     console.log('agreeAdd params', params)
     addFriend(params, (res) => {
       if (res.code === 0) {
-        const roomID = `${params.senderID}-${params.receiverSystemRoomID.split('-')[1]}`
-        // const roomID = receiverID
+        const roomid = `${params.senderID}-${params.receiverSystemRoomID.split('-')[1]}`
         const pr = {
           status: '1',
           senderID: params.senderID
@@ -29,14 +27,14 @@ io.on('connection', (socket) => {
           name: params.senderName,
           nickname: params.senderNickname,
           photo: '',
-          roomID: params.senderAndReceiverRoomID,
+          roomid: params.roomid,
           type: 'friend'
         }
         const receiverParams = {
           name: params.receiverName,
           nickname: params.receiverNickname,
           photo: '',
-          roomID: params.senderAndReceiverRoomID,
+          roomid: params.roomid,
           type: 'friend'
         }
         User.addToConversitionList(senderParams.name, receiverParams)
@@ -45,7 +43,7 @@ io.on('connection', (socket) => {
         console.log('receiverParams', receiverParams)
         const message = new Message()
         message.setMessageStatus(pr) // 设置消息状态 为 已通过
-        socket.to(roomID).emit('receiveAgreedMsg', receiverParams) // 添加好友方接收消息
+        socket.to(roomid).emit('receiveAgreedMsg', receiverParams) // 添加好友方接收消息
         socket.emit('receiveAgreedSuccess', senderParams) // 同意添加好友方接收消息 .in(params.receiverSystemRoomID)
       }
     })
@@ -55,13 +53,15 @@ io.on('connection', (socket) => {
     console.log('sendVerificationMessage')
     const message = new Message()
     message.saveMessage(params)
-    socket.emit('sendVerificationSuccess')// 添加方(发送验证请求方) .in(roomID)
+    socket.emit('sendVerificationSuccess') // 添加方(发送验证请求方) .in(roomid)
     socket.to(params.receiverSystemRoomID).emit('receivingVerificationMessage', params) // 接收方(一人)
   })
 
   socket.on('sendMsg', (params) => {
     const message = new Message()
     message.saveMessage(params)
+    socket.emit('sendMsgSuccess', params)
+    console.log('params.roomid', params.roomid)
     socket.to(params.roomid).emit('receivingMsg', params)
   })
 })

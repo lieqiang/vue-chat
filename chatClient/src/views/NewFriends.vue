@@ -94,8 +94,8 @@ export default {
       window.history.go(-1)
     },
     async getNewFriendsMsg() {
-      const roomID = this.VchatInfo.roomID
-      const res = await getNewFriendsMsg({ roomID })
+      const roomid = this.VchatInfo.roomid
+      const res = await getNewFriendsMsg({ roomid })
       if (res.data.error_code !== 0) {
         return
       }

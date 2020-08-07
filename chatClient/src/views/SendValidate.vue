@@ -65,7 +65,7 @@ export default {
         vchatID: this.VchatInfo.id,
         receiverName: this.friendInfo.name,
         receiverNickname: this.friendInfo.nickname,
-        senderAndReceiverRoomID: this.userInfo.id + '-' + this.friendInfo._id,
+        roomid: this.userInfo.id + '-' + this.friendInfo._id,
         receiverSystemRoomID: this.friendInfo._id + '-' + this.VchatInfo.id,
         state: 'friendInfo',
         type: 'validate',
@@ -74,7 +74,7 @@ export default {
         remarks: this.remarks
       }
       console.log('detaillll', params)
-      this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomID)
+      this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomid)
     }
   }
 }
