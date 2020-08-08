@@ -19,6 +19,7 @@ const messagesSchema = new Schema({
   receiverSystemRoomID: String, // 系统消息房间
   state: String, // group / friend
   type: String, // validate / info
+  msgType: String,
   status: String, // 0 未操作 1 同意 2 拒绝
   validationMessage: String,
   remarks: String // 备注

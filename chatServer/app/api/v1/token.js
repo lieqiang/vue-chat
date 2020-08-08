@@ -3,7 +3,7 @@ const { User } = require('@models/user')
 const { RegisterValidator, NotEmptyValidator } = require('@validator/validator')
 const { Success } = require('@core/http-exception')
 const { Auth } = require('@middlewares/auth')
-const { generateToken } = require('@core/util')
+const { generateToken } = require('@core/utils')
 const router = new Router({
     prefix: '/v1/token'
 })

@@ -9,6 +9,7 @@
   "author": "lieqiang zou",
   "license": "ISC",
   "dependencies": {
+    "@koa/multer": "^3.0.0",
     "basic-auth": "^2.0.1",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -20,6 +21,7 @@
     "lodash": "^4.17.15",
     "module-alias": "^2.2.2",
     "mongoose": "^5.9.13",
+    "multer": "^1.4.2",
     "require-directory": "^2.1.1",
     "socket.io": "^2.3.0",
     "validator": "^13.0.0"

@@ -11,7 +11,7 @@ let users = db.model('users', {
   province: { type: Object, default: { name: '北京市', value: '110000' } }, // 省
   city: { type: Object, default: { name: '市辖区', value: '110100' } }, // 市
   town: { type: Object, default: { name: '海淀区', value: '110108' } }, // 县
-  sex: { type: String, default: '3' }, // 0 男 1 女 3 保密
+  sex: { type: String, default: '2' }, // 0 男 1 女 3 保密
   signUpTime: { type: Date, default: Date.now() }, // 注册时间
   lastLoginTime: { type: Date, default: Date.now() }, // 最后一次登录
   conversationsList: Array, // 会话列表 * name 会话名称 * photo 会话头像 * roomid 会话id * type 会话类型 group / frend

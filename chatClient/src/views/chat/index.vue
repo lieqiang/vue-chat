@@ -41,6 +41,10 @@
                 </span>
               </div>
             </div>
+            <van-empty
+              v-show="!msgList.length"
+              description="暂无消息,快快聊天吧-_-"
+            />
           </div>
         </div>
       </div>
@@ -92,14 +96,15 @@ import BScroll from '@better-scroll/core'
 import PullDown from '@better-scroll/pull-down'
 import Viewer from 'v-viewer'
 import 'viewerjs/dist/viewer.css'
-import { NavBar, Toast, Button, Loading } from 'vant'
+import { NavBar, Toast, Button, Loading, Empty } from 'vant'
 import msgItem from './msgItem'
 import Face from '@/components/face'
 import { EMOJI_LIST } from '@/utils/face'
 import { getHistoryMsg } from '@/api/message'
+import { uploadImg } from '@/api/upload'
 BScroll.use(PullDown)
 Vue.use(Viewer)
-Vue.use(Toast).use(NavBar).use(Button).use(Loading)
+Vue.use(Toast).use(NavBar).use(Button).use(Loading).use(Empty)
 const TIME_BOUNCE = 800
 const THRESHOLD = 70
 const STOP = 56
@@ -358,7 +363,7 @@ export default {
         nickname: this.userInfo.nickname,
         roomid: this.roomid,
         senderID: this.userInfo.id,
-        style: 'txt',
+        msgType: 'txt',
         read: [this.userInfo.name],
         time: new Date().getTime()
       }
@@ -367,7 +372,7 @@ export default {
     triggerUpload() {
       this.$refs.uploadPic.click()
     },
-    handleChange(e) {
+    async handleChange(e) {
       if (!e.target.files.length) {
         return
       }
@@ -379,8 +384,24 @@ export default {
         return
       }
       this.uploding = true
-      const param = new FormData()
-      param.append('file', files[0])
+      const formData = new FormData()
+      formData.append('file', files[0])
+      const res = await uploadImg(formData)
+      if (!res.error_code === 0) {
+        return Toast('发送图片失败-_-')
+      }
+      this.uploding = false
+      const params = {
+        message: res.data.data,
+        name: this.userInfo.name,
+        nickname: this.userInfo.nickname,
+        roomid: this.roomid,
+        senderID: this.userInfo.id,
+        msgType: 'img',
+        read: [this.userInfo.name],
+        time: new Date().getTime()
+      }
+      this.$socket.emit('sendMsg', params)
     },
     changeFaceStatus() {
       this.isFaceShow = !this.isFaceShow

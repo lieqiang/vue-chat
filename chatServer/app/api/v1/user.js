@@ -38,6 +38,7 @@ router.get('getUserInfo', async (ctx) => {
       data: {
         id: res[0]._id,
         name: res[0].name,
+        sex: res[0].sex,
         photo: res[0].photo,
         bubble: res[0].bubble,
         chatTheme: res[0].chatTheme,

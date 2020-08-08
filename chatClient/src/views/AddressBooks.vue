@@ -96,7 +96,6 @@ export default {
           roomid: item.roomid
         })
       })
-      // 为了得到有序列表，我们需要处理 map
       const ret = []
       for (const key in map) {
         const val = map[key]
