@@ -26,14 +26,14 @@ io.on('connection', (socket) => {
         const senderParams = { // 加nickname
           name: params.senderName,
           nickname: params.senderNickname,
-          photo: '',
+          avatar: '',
           roomid: params.roomid,
           type: 'friend'
         }
         const receiverParams = {
           name: params.receiverName,
           nickname: params.receiverNickname,
-          photo: '',
+          avatar: '',
           roomid: params.roomid,
           type: 'friend'
         }

@@ -2,6 +2,9 @@ export default {
   SET_USER_INFO(state, data) {
     state.userInfo = data
   },
+  SET_USER_AVATAR(state, url) {
+    state.userInfo.avatar = `${state.root}${url}`
+  },
   SET_VCHAT_INFO(state, data) {
     state.VchatInfo = data
   },

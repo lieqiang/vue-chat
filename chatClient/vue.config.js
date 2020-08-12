@@ -1,6 +1,6 @@
-const path = require("path");//引入path模块
+const path = require("path") //引入path模块
 function resolve(dir){
-    return path.join(__dirname,dir)//path.join(__dirname)设置绝对路径
+  return path.join(__dirname, dir)//path.join(__dirname)设置绝对路径
 }
 
 module.exports={
@@ -11,14 +11,14 @@ module.exports={
       https: false,
       hotOnly: false, 
       proxy: {
-          '/': {
-            target: 'http://localhost:8090/v1', //API服务器的地址
-            ws: true,  //代理websockets
-            changeOrigin: true, // 虚拟的站点需要更管origin
-            pathRewrite: {   //重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
-              '^/api': ''
-            }
+        '/': {
+          target: 'http://localhost:8090/v1', //API服务器的地址
+          ws: true,  //代理websockets
+          changeOrigin: true, // 虚拟的站点需要更管origin
+          pathRewrite: {   //重写路径 比如'/api/aaa/ccc'重写为'/aaa/ccc'
+            '^/api': ''
           }
+        }
       },
   },
   chainWebpack:(config) => {

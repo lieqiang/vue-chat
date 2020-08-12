@@ -50,10 +50,20 @@ const routes = [
     children: [
       {
         path: '/me',
-        component: () => import(/* webpackChunkName: "Me" */ '@/views/Me.vue'),
+        component: () => import(/* webpackChunkName: "Me" */ '@/views/Me/Me.vue'),
         name: 'Me'
       }
     ]
+  },
+  {
+    path: '/personalInfo',
+    component: () => import(/* webpackChunkName: "PersonalInfo" */ '@/views/Me/PersonalInfo.vue'),
+    name: 'PersonalInfo'
+  },
+  {
+    path: '/editAvatar',
+    component: () => import(/* webpackChunkName: "EditAvatar" */ '@/views/Me/EditAvatar.vue'),
+    name: 'EditAvatar'
   },
   {
     path: '/chat',

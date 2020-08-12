@@ -8,13 +8,14 @@ export default {
           return
         }
         console.log(res)
-        const data = res.data.data
-        commit('SET_USER_INFO', data)
-        if (data.conversationsList.length) {
-          commit('SET_CONVERSATIONS_LIST', res.data.data.conversationsList)
+        const userData = res.data.data
+        userData.avatar = `${state.root}${userData.avatar}`
+        commit('SET_USER_INFO', userData)
+        if (userData.conversationsList.length) {
+          commit('SET_CONVERSATIONS_LIST', userData.conversationsList)
         }
-        console.log('userInfo', data)
-        console.log('conversationsList', data.conversationsList)
+        console.log('userInfo', userData)
+        console.log('conversationsList', userData.conversationsList)
         resolve(res)
       })
     })
@@ -36,6 +37,9 @@ export default {
         resolve(res)
       })
     })
+  },
+  setUserAvatar({ commit }, url) {
+    commit('SET_USER_AVATAR', url)
   },
   addToConversationsList({ commit }, data) {
     commit('ADD_TO_CONVERSATIONS_LIST', data)

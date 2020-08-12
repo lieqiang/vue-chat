@@ -1,4 +1,5 @@
 <script>
+import { mapGetters } from 'vuex'
 import { EMOJI_LIST } from '@/utils/face'
 export default {
   name: 'TxtItem',
@@ -19,6 +20,9 @@ export default {
       emojiList: EMOJI_LIST
     }
   },
+  computed: {
+    ...mapGetters(['root'])
+  },
   render: function(h) {
     var _this = this
     // 撤回消息
@@ -38,7 +42,7 @@ export default {
       )
     }
     if (this.item.msgType === 'img') {
-      const imgSrc = `http://localhost:8090${this.item.message}`
+      const imgSrc = `${this.root}${this.item.message}`
       return h(
         'span', {
           attrs: {

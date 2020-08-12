@@ -4,7 +4,7 @@ let users = db.model('users', {
   name: { type: String, unique: true },
   pass: String,
   code: { type: String, unique: true }, // 唯一的code
-  photo: { type: String, default: '/img/picture.png' }, // 默认头像
+  avatar: { type: String, default: '/img/picture.png' }, // 默认头像
   signature: { type: String, default: '这个人很懒，暂时没有签名哦！' },
   nickname: { type: String, default: ''},
   email: { type: String, default: '' },
@@ -14,7 +14,7 @@ let users = db.model('users', {
   sex: { type: String, default: '2' }, // 0 男 1 女 3 保密
   signUpTime: { type: Date, default: Date.now() }, // 注册时间
   lastLoginTime: { type: Date, default: Date.now() }, // 最后一次登录
-  conversationsList: Array, // 会话列表 * name 会话名称 * photo 会话头像 * roomid 会话id * type 会话类型 group / frend
+  conversationsList: Array, // 会话列表 * name 会话名称 * avatar 会话头像 * roomid 会话id * type 会话类型 group / frend
   cover: { type: Array, default: ['/img/cover.jpg', '/img/cover1.jpg'] }, // 封面展示
   emoji: Array // 表情包
 })
@@ -26,7 +26,7 @@ class User {
     const info = {
       name: 'Vchat',
       pass: '12345678',
-      photo: '/img/vchat.png',
+      avatar: '/img/vchat.png',
       signature: 'chat官方团队',
       nickname: 'chat小助手'
     }
@@ -89,7 +89,7 @@ class User {
         _id: 1,
         name: 1,
         nickname: 1,
-        photo: 1,
+        avatar: 1,
         signature: 1,
         sex: 1,
         province: 1,
@@ -102,6 +102,11 @@ class User {
   // 添加一个新的 好友到会话列表
   static async addToConversitionList(userName, params) {
     return await users.updateOne({ name: userName }, {$push: { conversationsList: params }})
+  }
+
+  static async updateAvatar(params) {
+    // const id = db.Types.ObjectId(params.id)
+    return await users.updateOne({ name: params.name }, { $set: { avatar: params.avatar } }, { upsert: true })
   }
 }
 

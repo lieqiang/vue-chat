@@ -62,10 +62,10 @@ export function findMyfriends(query) {
   })
 }
 
-// export function addToFriendsList(query) {
-//   return request({
-//     url: '/user/addToFriendsList',
-//     method: 'get',
-//     params: query
-//   })
-// }
+export function updateAvatar(query) {
+  return request({
+    url: '/user/updateAvatar',
+    method: 'post',
+    data: query
+  })
+}

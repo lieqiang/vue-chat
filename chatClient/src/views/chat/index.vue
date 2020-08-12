@@ -82,7 +82,7 @@
     <div :style="{'width': deviceWidth, 'margin': '0 auto', 'bottom': isFaceShow ? '0' : '-189px'}" :class="{'pc-bd': deviceWidth === '750px'}" class="face b-t" @click.stop="stop">
       <face @face-change="handleSelectFace" @delete-text="deleteText"/>
     </div>
-    <div v-if="uploding" class="img-loading">
+    <div v-if="uploading" class="img-loading">
       <van-loading color="#1989fa" />
     </div>
   </div>
@@ -121,7 +121,7 @@ export default {
       chatText: '',
       isMsgLoadingShow: false,
       imgSrc: '',
-      uploding: false,
+      uploading: false,
       height: '100%',
       viewer: null,
       msgList: [],
@@ -383,14 +383,15 @@ export default {
         this.$refs.uploadPic.value = ''
         return
       }
-      this.uploding = true
+      this.uploading = true
       const formData = new FormData()
       formData.append('file', files[0])
       const res = await uploadImg(formData)
+      this.uploading = false
       if (!res.error_code === 0) {
+        this.$refs.uploadPic.value = ''
         return Toast('发送图片失败-_-')
       }
-      this.uploding = false
       const params = {
         message: res.data.data,
         name: this.userInfo.name,

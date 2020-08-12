@@ -6,7 +6,6 @@ const { Success } = require('@core/http-exception')
 const router = new Router({
   prefix: '/v1/user/'
 })
-
 router.post('signup', async (ctx) => {
   const v = await new RegisterValidator().validate(ctx)
   const user = {
@@ -27,7 +26,6 @@ router.post('signup', async (ctx) => {
 
 router.get('getUserInfo', async (ctx) => {
   const username = ctx.request.query.username
-  console.log('username', username)
   if (username) {
     const res = await User.getUserInfo(username)
     if (!res.length) {
@@ -39,7 +37,7 @@ router.get('getUserInfo', async (ctx) => {
         id: res[0]._id,
         name: res[0].name,
         sex: res[0].sex,
-        photo: res[0].photo,
+        avatar: res[0].avatar,
         bubble: res[0].bubble,
         chatTheme: res[0].chatTheme,
         projectTheme: res[0].projectTheme,
@@ -103,7 +101,7 @@ router.get('findMyfriends', async(ctx) => {
       data.push({
         createDate: v.createDate,
         nickname: v.receiverID.nickname,
-        photo: v.receiverID.photo,
+        avatar: v.receiverID.avatar,
         signature: v.receiverID.signature,
         id: v.receiverID._id,
         roomid: userid + '-' + v.receiverID._id
@@ -113,7 +111,7 @@ router.get('findMyfriends', async(ctx) => {
       data.push({
         createDate: v.createDate,
         nickname: v.senderID.nickname,
-        photo: v.senderID.photo,
+        avatar: v.senderID.avatar,
         signature: v.senderID.signature,
         id: v.senderID._id,
         roomid: v.senderID._id + '-' + userid
@@ -123,6 +121,22 @@ router.get('findMyfriends', async(ctx) => {
       error_code: 0,
       data: data
     }
+  }
+})
+
+router.post('updateAvatar', async (ctx) => {
+  const params = ctx.request.body
+  const res = await User.updateAvatar(params)
+  console.log('modify', res)
+  if (!res.nModified === 1) {
+    console.log('修改成功', res)
+    ctx.body = {
+      error_code: -1
+    }
+    return
+  }
+  ctx.body = {
+    error_code: 0
   }
 })
 

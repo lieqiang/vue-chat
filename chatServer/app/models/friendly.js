@@ -15,10 +15,10 @@ let friendlySchema = new db.Schema({
 })
 
 async function findFriendByUserM (userId) {
-  return friendly.find({ senderID: userId }).populate({ path: 'receiverID', select: 'signature photo nickname' }) // 关联查询
+  return friendly.find({ senderID: userId }).populate({ path: 'receiverID', select: 'signature avatar nickname' }) // 关联查询
 }
 async function findFriendByUserY (userId) {
-  return friendly.find({ receiverID: userId }).populate({ path: 'senderID', select: 'signature photo nickname' })
+  return friendly.find({ receiverID: userId }).populate({ path: 'senderID', select: 'signature avatar nickname' })
 }
 
 let friendly = db.model('friendlies', friendlySchema) // friendly 创建的文档是 friendlies 坑！！！

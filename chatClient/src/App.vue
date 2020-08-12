@@ -16,7 +16,6 @@ export default {
   sockets: {
     joined(OnlineUser) {
       console.log('joined', OnlineUser)
-      // this.$store.commit('setOnlineUser', OnlineUser)
     },
     receivingVerificationMessage(data) {
       console.log(data)
