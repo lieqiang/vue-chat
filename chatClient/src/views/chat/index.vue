@@ -1,9 +1,9 @@
 <template>
   <div :style="{'width': deviceWidth, 'margin': '0 auto'}" class="main-content">
     <div class="service-page">
-      <van-nav-bar left-text="返回" @click-left="back">
+      <van-nav-bar left-arrow @click-left="back">
         <template #title>
-          <span>王麻子</span>
+          <span>{{ nickname }}</span>
         </template>
       </van-nav-bar>
       <div :style="{ height: height + 'px' }" class="chat-container" @click="slideup">
@@ -34,7 +34,9 @@
               <div class="info-time">{{ item.time | timeFilter('MDHM') }}</div>
               <div class="other-desc">
                 <div v-show="item.senderID !== 'cancel' && item.senderID != '966530'" class="other-face">
-                  <span :class="[item.senderID !== userInfo.id ? 'user-avatar' : 'mine-avatar', 'chat-avatar']"/>
+                  <span :class="[item.senderID !== userInfo.id ? 'user-avatar' : 'mine-avatar', 'chat-avatar']">
+                    <img :src="`${root}${item.avatar}`" />
+                  </span>
                 </div>
                 <span class="other-info" @contextmenu="stop">
                   <msg-item :item="item" :quesid="questionInfo.quesid" @image-view-change="showImageView"/>
@@ -133,11 +135,12 @@ export default {
       reg: /(^\s*)|(\s*$)/g,
       txtReg: /\[[^(\)|\[)]*\]+?$/, // eslint-disable-line
       isSendBtnShow: false,
-      roomid: ''
+      roomid: '',
+      nickname: ''
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'root'])
   },
   watch: {
     chatText(n, o) {
@@ -166,8 +169,9 @@ export default {
     }
   },
   created() {
-    const { roomid } = this.$route.query
+    const { roomid, nickname } = this.$route.query
     this.roomid = roomid
+    this.nickname = nickname
     this.getHistoryMsg(roomid)
   },
   mounted() {
@@ -361,6 +365,7 @@ export default {
         message: text,
         name: this.userInfo.name,
         nickname: this.userInfo.nickname,
+        avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
         roomid: this.roomid,
         senderID: this.userInfo.id,
         msgType: 'txt',
@@ -396,6 +401,7 @@ export default {
         message: res.data.data,
         name: this.userInfo.name,
         nickname: this.userInfo.nickname,
+        avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
         roomid: this.roomid,
         senderID: this.userInfo.id,
         msgType: 'img',
@@ -466,6 +472,10 @@ export default {
     display: inline-block;
     width: 40px;
     height: 40px;
+    img {
+      width: 40px;
+      height: 40px;
+    }
   }
   .other {
     padding: 10px;
@@ -489,10 +499,10 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        .user-avatar {
-          background: url(../../assets/user.jpg) no-repeat;
-          background-size: contain;
-        }
+        // .user-avatar {
+        //   // background: url(../../assets/user.jpg) no-repeat;
+        //   background-size: contain;
+        // }
       }
     }
     .other-info {
@@ -550,10 +560,10 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        .mine-avatar {
-          background: url(../../assets/mine.jpg) no-repeat;
-          background-size: cover;
-        }
+        // .mine-avatar {
+        //   // background: url(../../assets/mine.jpg) no-repeat;
+        //   // background-size: cover;
+        // }
       }
     }
     .other-info {

@@ -21,7 +21,6 @@
 import Vue from 'vue'
 import { NavBar, Button, Toast } from 'vant'
 import { mapGetters } from 'vuex'
-import { parseTime } from '@/utils'
 Vue.use(NavBar)
 Vue.use(Button)
 Vue.use(Toast)
@@ -43,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'VchatInfo'])
+    ...mapGetters(['userInfo', 'VchatInfo', 'root'])
   },
   created() {
     this.friendInfo = this.$route.query
@@ -57,9 +56,10 @@ export default {
       const params = {
         senderID: this.userInfo.id,
         senderName: this.userInfo.name,
-        senderNickname: this.userInfo.nickname, // 空值？？？？？需排查
+        senderNickname: this.userInfo.nickname,
         senderSignature: this.userInfo.signature,
-        time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+        avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
+        time: new Date().getTime(),
         read: [],
         receiverID: this.friendInfo._id,
         vchatID: this.VchatInfo.id,
@@ -73,7 +73,6 @@ export default {
         validationMessage: this.validationMessage,
         remarks: this.remarks
       }
-      console.log('detaillll', params)
       this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomid)
     }
   }

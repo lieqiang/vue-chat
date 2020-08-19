@@ -6,6 +6,7 @@ const messagesSchema = new Schema({
   senderNickname: String, // 用户昵称
   senderSignature: String, // 个性签名
   senderID: String, // 用户id
+  avatar: String,
   time: Number, // 时间戳
   message: String, // 消息
   read: Array, // 是否已读 0/1

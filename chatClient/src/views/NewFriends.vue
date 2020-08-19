@@ -21,7 +21,7 @@
               round
               width="50"
               height="50"
-              :src="item.src"
+              :src="getAvatar(item)"
             />
           </template>
           <template #right-icon>
@@ -81,7 +81,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['VchatInfo'])
+    ...mapGetters(['VchatInfo', 'root'])
   },
   watch: {
   },
@@ -107,6 +107,10 @@ export default {
           click: true
         })
       })
+    },
+    getAvatar(item) {
+      console.log(`${this.root}${item.avatar}`)
+      return `${this.root}${item.avatar}`
     },
     clearSystemMsg() {
       this.$store.dispatch('clearAdressBooksMessages')

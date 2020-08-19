@@ -9,7 +9,7 @@
     <div class="wrapper">
       <div class="content">
         <van-cell-group class="list">
-          <van-cell center v-for="(item, index) in conversationsList" :key="index" @click="linkToChat(item.roomid)">
+          <van-cell center v-for="(item, index) in conversationsList" :key="index" @click="linkToChat(item)">
             <template #title>
               <van-image
                 round
@@ -89,11 +89,13 @@ export default {
       }
       this.conversationsList = res.data.data
     },
-    linkToChat(roomid) {
+    linkToChat(item) {
+      const { roomid, nickname } = item
       this.$router.push({
         path: '/chat',
         query: {
-          roomid
+          roomid,
+          nickname
         }
       })
     }
