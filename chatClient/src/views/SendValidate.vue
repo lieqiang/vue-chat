@@ -73,6 +73,7 @@ export default {
         validationMessage: this.validationMessage,
         remarks: this.remarks
       }
+      console.log(params)
       this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomid)
     }
   }

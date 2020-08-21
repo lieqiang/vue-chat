@@ -18,11 +18,10 @@
             />
           </template>
         </van-cell>
-        <van-cell title="昵称" is-link :value="userInfo.nickname" />
-        <van-cell title="微信号" is-link :value="userInfo.name" />
-        <van-cell title="性别" is-link :value="getSex" />
-        <van-cell title="地区" is-link value="内容" />
-        <van-cell title="个性签名" is-link :value="userInfo.signature" />
+        <van-cell :value="userInfo.nickname" title="昵称" is-link to="/editNickname" />
+        <van-cell :value="getSex" title="性别" is-link to="/editSex" />
+        <van-cell value="内容" title="地区" is-link />
+        <van-cell :value="userInfo.signature" title="个性签名" is-link to="/editSignature" />
       </van-cell-group>
     </div>
   </div>

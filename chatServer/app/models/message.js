@@ -30,6 +30,7 @@ const messages = db.model('messages', messagesSchema)
 class Message {
   constructor() {}
   async saveMessage(params) {
+    console.log('params', params)
     return await messages.create(params)
   }
   async getSystemMessages(roomid) {

@@ -44,22 +44,22 @@ const checkMyfriends = (params, callback) => { // 验证是否已加为好友
 //         }
 //     })
 // }
-    let pr = {userM: params.userY, userY: params.userM};
-    friendly.find(params).then(r => { // 类似下面的写法，别学
+  let pr = {userM: params.userY, userY: params.userM};
+  friendly.find(params).then(r => { // 类似下面的写法，别学
+    if (r.length > 0) {
+      callback({code: 0, data: true})
+    } else {
+      friendly.find(pr).then(r => {
         if (r.length > 0) {
-            callback({code: 0, data: true})
+          callback({code: 0, data: true})
         } else {
-            friendly.find(pr).then(r => {
-                if (r.length > 0) {
-                    callback({code: 0, data: true})
-                } else {
-                    callback({code: 0, data: false})
-                }
-            })
+          callback({code: 0, data: false})
         }
-    }).catch(err => {
-        callback({code: -1, data: err})
-    })
+      })
+    }
+  }).catch(err => {
+    callback({code: -1, data: err})
+  })
 }
 
 const addFriend = (params, callback) => {

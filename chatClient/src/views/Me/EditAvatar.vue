@@ -32,7 +32,7 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { NavBar, ImagePreview, ActionSheet, Toast, Loading } from 'vant'
-import { updateAvatar } from '@/api/user'
+import { updateUserInfo } from '@/api/user'
 import { uploadImg } from '@/api/upload'
 Vue.use(NavBar).use(ImagePreview).use(ActionSheet).use(Toast).use(Loading)
 export default {
@@ -56,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'root'])
   },
   created() {
     this.images.push(this.userInfo.avatar)
@@ -97,13 +97,15 @@ export default {
       this.$refs.uploadPic.value = ''
       const params = {
         name: this.userInfo.name,
-        avatar: res.data.data
+        field: {
+          avatar: res.data.data
+        }
       }
-      const response = await updateAvatar(params)
+      const response = await updateUserInfo(params)
       if (!response.error_code === 0) {
         return Toast('保存头像失败-_-')
       }
-      this.$store.dispatch('setUserAvatar', res.data.data)
+      this.$store.dispatch('updateUserInfo', { avatar: `${this.root}${res.data.data}` })
       this.$router.push({
         path: '/PersonalInfo'
       })

@@ -109,7 +109,6 @@ export default {
       })
     },
     getAvatar(item) {
-      console.log(`${this.root}${item.avatar}`)
       return `${this.root}${item.avatar}`
     },
     clearSystemMsg() {

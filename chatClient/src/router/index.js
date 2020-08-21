@@ -66,6 +66,21 @@ const routes = [
     name: 'EditAvatar'
   },
   {
+    path: '/editNickname',
+    component: () => import(/* webpackChunkName: "EditNickname" */ '@/views/Me/EditNickname.vue'),
+    name: 'EditNickname'
+  },
+  {
+    path: '/editSex',
+    component: () => import(/* webpackChunkName: "EditSex" */ '@/views/Me/EditSex.vue'),
+    name: 'EditSex'
+  },
+  {
+    path: '/editSignature',
+    component: () => import(/* webpackChunkName: "EditSignature" */ '@/views/Me/EditSignature.vue'),
+    name: 'EditSignature'
+  },
+  {
     path: '/chat',
     name: 'Chat',
     component: () => import(/* webpackChunkName: "chat" */ '@/views/chat/index.vue')
