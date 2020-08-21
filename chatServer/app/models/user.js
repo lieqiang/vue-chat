@@ -3,7 +3,6 @@ const db = require('@core/db')
 let users = db.model('users', {
   name: { type: String, unique: true },
   pass: String,
-  code: { type: String, unique: true }, // 唯一的code
   avatar: { type: String, default: '/img/picture.png' }, // 默认头像
   signature: { type: String, default: '这个人很懒，暂时没有签名哦！' },
   nickname: { type: String, default: ''},
@@ -14,9 +13,7 @@ let users = db.model('users', {
   sex: { type: String, default: '2' }, // 0 男 1 女 3 保密
   signUpTime: { type: Date, default: Date.now() }, // 注册时间
   lastLoginTime: { type: Date, default: Date.now() }, // 最后一次登录
-  conversationsList: Array, // 会话列表 * name 会话名称 * avatar 会话头像 * roomid 会话id * type 会话类型 group / frend
-  cover: { type: Array, default: ['/img/cover.jpg', '/img/cover1.jpg'] }, // 封面展示
-  emoji: Array // 表情包
+  conversationsList: Array // 会话列表 * name 会话名称 * avatar 会话头像 * roomid 会话id * type 会话类型 group / frend
 })
 
 class User {
@@ -99,14 +96,12 @@ class User {
     }
   }
 
-  // 添加一个新的 好友到会话列表
   static async addToConversitionList(userName, params) {
     return await users.updateOne({ name: userName }, {$push: { conversationsList: params }})
   }
 
-  static async updateAvatar(params) {
-    // const id = db.Types.ObjectId(params.id)
-    return await users.updateOne({ name: params.name }, { $set: { avatar: params.avatar } }, { upsert: true })
+  static async updateUserInfo(params) {
+    return await users.updateOne({ name: params.name }, { $set: params.field }, { upsert: true })
   }
 }
 

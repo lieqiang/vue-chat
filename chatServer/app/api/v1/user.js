@@ -124,9 +124,9 @@ router.get('findMyfriends', async(ctx) => {
   }
 })
 
-router.post('updateAvatar', async (ctx) => {
+router.post('updateUserInfo', async (ctx) => {
   const params = ctx.request.body
-  const res = await User.updateAvatar(params)
+  const res = await User.updateUserInfo(params)
   console.log('modify', res)
   if (!res.nModified === 1) {
     console.log('修改成功', res)

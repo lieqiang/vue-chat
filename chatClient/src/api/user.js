@@ -62,9 +62,9 @@ export function findMyfriends(query) {
   })
 }
 
-export function updateAvatar(query) {
+export function updateUserInfo(query) {
   return request({
-    url: '/user/updateAvatar',
+    url: '/user/updateUserInfo',
     method: 'post',
     data: query
   })
