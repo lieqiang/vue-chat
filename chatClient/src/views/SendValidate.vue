@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar fixed left-arrow @click-left="back">
+    <van-nav-bar fixed left-arrow @click-left="$router.go(-1)">
       <template #right>
         <van-button type="primary" size="small" @click="sendValidation">发送</van-button>
       </template>
@@ -30,7 +30,7 @@ export default {
   sockets: {
     sendVerificationSuccess() {
       Toast('发送申请成功')
-      this.back()
+      this.$router.go(-1)
     }
   },
   components: {
@@ -49,9 +49,6 @@ export default {
     this.remarks = this.friendInfo.nickname
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     async sendValidation() {
       const params = {
         senderID: this.userInfo.id,
@@ -73,8 +70,8 @@ export default {
         validationMessage: this.validationMessage,
         remarks: this.remarks
       }
-      console.log(params)
       this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomid)
+      this.validationMessage && localStorage.setItem('validationMessage', this.validationMessage)
     }
   }
 }

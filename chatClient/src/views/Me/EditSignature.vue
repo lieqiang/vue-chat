@@ -4,13 +4,13 @@
       left-arrow
       fixed
       left-text="个性签名"
-      @click-left="back"
+      @click-left="$router.go(-1)"
     >
       <template #right>
         <van-button type="primary" size="small" @click="save">保存</van-button>
       </template>
     </van-nav-bar>
-    <div class="wrapper">
+    <div class="main-content">
       <van-cell-group>
         <van-field v-model="signature" placeholder="请输入个性签名" />
       </van-cell-group>
@@ -37,9 +37,6 @@ export default {
     this.signature = this.userInfo.signature
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     async save(e) {
       const params = {
         name: this.userInfo.name,
@@ -59,13 +56,3 @@ export default {
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .wrapper {
-    position: fixed;
-    top: 46px;
-    bottom: 44px;
-    left: 0;
-    right: 0;
-  }
-</style>

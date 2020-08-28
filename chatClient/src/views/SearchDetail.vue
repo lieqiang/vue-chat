@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar fixed left-arrow @click-left="back">
+    <van-nav-bar fixed left-arrow @click-left="$router.go(-1)">
       <template #right>
         <van-icon name="ellipsis" size="18" />
       </template>
@@ -55,9 +55,6 @@ export default {
     this.friendInfo = this.$route.query
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     addToAddressBooks() {
       this.$router.push({
         path: '/sendValidate',

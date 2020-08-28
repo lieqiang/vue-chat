@@ -196,6 +196,13 @@ div:focus {
   img {
     width: 100px;
     height: 130px;
-    // max-width: 120px !important;
   }
+}
+
+.main-content {
+  position: fixed;
+  top: 46px;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }

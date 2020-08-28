@@ -4,13 +4,13 @@
       left-arrow
       fixed
       left-text="设置性别"
-      @click-left="back"
+      @click-left="$router.go(-1)"
     >
       <template #right>
         <van-button type="primary" size="small" @click="save">保存</van-button>
       </template>
     </van-nav-bar>
-    <div class="wrapper">
+    <div class="main-content">
       <van-radio-group v-model="sex">
         <van-cell-group>
           <van-cell title="男" clickable @click="sex = '0'">
@@ -48,9 +48,6 @@ export default {
     this.sex = this.userInfo.sex
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     async save(e) {
       const params = {
         name: this.userInfo.name,
@@ -70,13 +67,3 @@ export default {
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .wrapper {
-    position: fixed;
-    top: 46px;
-    bottom: 44px;
-    left: 0;
-    right: 0;
-  }
-</style>

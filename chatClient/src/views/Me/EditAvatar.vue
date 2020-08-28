@@ -4,14 +4,14 @@
       left-arrow
       fixed
       left-text="头像"
-      @click-left="back"
+      @click-left="$router.go(-1)"
       @click-right="onClickRight"
     >
       <template #right>
         <van-icon name="ellipsis" size="18" />
       </template>
     </van-nav-bar>
-    <div class="wrapper">
+    <div class="main-content">
       <van-image-preview v-model="imageShow" :asyncClose="true" :images="images" />
     </div>
     <van-action-sheet cancel-text="取消" v-model="showActionSheet" :actions="actions" @select="onSelect" />
@@ -62,9 +62,6 @@ export default {
     this.images.push(this.userInfo.avatar)
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     onClickRight() {
       this.showActionSheet = true
     },
@@ -118,13 +115,6 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .wrapper {
-    position: fixed;
-    top: 46px;
-    bottom: 44px;
-    left: 0;
-    right: 0;
-  }
   .img-loading {
     position: fixed;
     z-index: 9999;
