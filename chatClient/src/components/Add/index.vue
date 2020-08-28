@@ -1,23 +1,23 @@
 <template>
   <div>
     <van-search
+      background="#f2f2f2"
       v-model="inputText"
-      show-action
+      :show-action="isShowAction"
       placeholder="搜索"
+      @input="inputChange"
       @search="search"
       @cancel="cancel"
     />
     <div class="search-result">
-      <van-cell-group>
-        <van-cell
-        v-for="(item, index) in result"
-        clickable
-        :key="index"
-        :title="item.nickname || item.name"
-        :label="item.signature"
-        @click="linkToSearchDetail(item)"
-      />
-      </van-cell-group>
+      <van-cell
+      v-for="(item, index) in result"
+      clickable
+      :key="index"
+      :title="item.nickname || item.name"
+      :label="item.signature"
+      @click="linkToSearchDetail(item)"
+    />
     </div>
     <van-empty
       v-show="!result.length"
@@ -34,6 +34,12 @@ Vue.use(Search).use(Button).use(Cell).use(CellGroup).use(Empty)
 
 export default {
   name: 'Search',
+  props: {
+    isShowAction: {
+      type: Boolean,
+      default: true
+    }
+  },
   components: {
   },
   data() {
@@ -43,29 +49,26 @@ export default {
       result: []
     }
   },
-  watch: {
-    inputText(newVal, oldVal) {
-      if (newVal) {
-        setTimeout(() => {
-          this.search()
-        }, 500)
+  methods: {
+    inputChange() {
+      if (this.inputText) {
+        this.search()
       } else {
         this.result = []
         this.description = '输入关键字搜索'
       }
-    }
-  },
-  methods: {
+    },
     async search() {
-      const res = await search({ txt: this.inputText })
-      if (res.data.error_code !== 0) {
-        this.result = []
-        this.description = '暂无搜索结果'
-        return
+      if (this.inputText) {
+        const res = await search({ txt: this.inputText })
+        if (res.data.error_code !== 0) {
+          this.result = []
+          this.description = '暂无搜索结果'
+          return
+        }
+        this.result = res.data.data
+        this.description = !res.data.data.length ? '暂无搜索结果' : ''
       }
-      this.result = res.data.data
-      this.description = !res.data.data.length ? '暂无搜索结果' : ''
-      console.log(res)
     },
     cancel() {
       this.$emit('cancel')
@@ -80,4 +83,7 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .van-search__content {
+    background-color: #fff;
+  }
 </style>
