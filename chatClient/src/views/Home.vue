@@ -2,20 +2,20 @@
   <div>
     <van-nav-bar fixed left-text="聊天(10)">
       <template #right>
-        <van-icon name="search" size="18" @click="search" />
+        <!-- <van-icon name="search" size="18" @click="search" /> -->
         <van-icon name="add-o" size="18" class="ml-20" @click="isAddShow = true" />
       </template>
     </van-nav-bar>
-    <div class="wrapper">
+    <div class="scroll-wrapper">
       <div class="content">
         <van-cell-group class="list">
-          <van-cell center v-for="(item, index) in conversationsList" :key="index" @click="linkToChat(item)">
+          <van-cell center v-for="(item, index) in list" :key="index" @click="linkToChat(item)">
             <template #title>
               <van-image
                 round
                 width="50"
                 height="50"
-                :src="item.src"
+                :src="getAvatar(item.avatar)"
               />
             </template>
             <template #right-icon>
@@ -27,11 +27,6 @@
           </van-cell>
         </van-cell-group>
       </div>
-    </div>
-    <div v-show="isShow" class="fixed">
-      <search
-        @cancel="cancel"
-      />
     </div>
     <div v-show="isAddShow" class="fixed">
       <add
@@ -45,49 +40,42 @@ import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { NavBar, Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
 import BScroll from '@better-scroll/core'
-import Search from '@/components/Search'
 import Add from '@/components/Add'
-import { findMyfriends } from '@/api/user'
 Vue.use(NavBar).use(Icon).use(Cell).use(CellGroup).use(Toast).use(VanImage)
 export default {
   name: 'Home',
   components: {
-    Search,
     Add
   },
   data() {
     return {
-      isShow: false,
       isAddShow: false,
-      conversationsList: []
+      list: []
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'root', 'addressBooksList'])
+  },
+  watch: {
+    addressBooksList(newList, oldList) {
+      this.list = newList.filter(item => item.isInChatChannels)
+    }
   },
   created() {
-    this.findMyfriends()
+    this.list = this.addressBooksList.filter(item => item.isInChatChannels)
   },
   mounted() {
-    const wrapper = document.querySelector('.wrapper')
+    const wrapper = document.querySelector('.scroll-wrapper')
     const scroll = new BScroll(wrapper, { // eslint-disable-line
       click: true
     })
   },
   methods: {
-    search() {
-      this.isShow = true
-    },
-    cancel() {
-      this.isShow = false
-    },
-    async findMyfriends() {
-      const res = await findMyfriends({ userid: this.userInfo.id })
-      if (res.data.error_code !== 0) {
-        this.conversationsList = []
-        return
+    getAvatar(avatar) {
+      if (avatar) {
+        return `${this.root}${avatar}`
       }
-      this.conversationsList = res.data.data
+      return require('@/assets/default.jpg')
     },
     linkToChat(item) {
       const { roomid, nickname } = item
@@ -106,7 +94,7 @@ export default {
   .ml-20 {
     margin-left: 20px;
   }
-  .wrapper {
+  .scroll-wrapper {
     position: fixed;
     top: 46px;
     bottom: 44px;

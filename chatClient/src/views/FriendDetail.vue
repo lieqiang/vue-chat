@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar fixed left-arrow @click-left="back">
+    <van-nav-bar fixed left-arrow @click-left="$router.go(-1)">
       <template #right>
         <van-icon name="ellipsis" size="18" />
       </template>
@@ -32,6 +32,7 @@
 </template>
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import { NavBar, Icon, Button, Cell, CellGroup, Image as VanImage, Toast } from 'vant'
 import { getUserInfo } from '@/api/user'
 Vue.use(NavBar)
@@ -63,14 +64,14 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters(['userInfo'])
+  },
   created() {
     const { username } = this.$route.query
     this.getUserInfo(username)
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     async getUserInfo(username) {
       const res = await getUserInfo({ username })
       if (res.data.error_code !== 0) {
@@ -80,9 +81,12 @@ export default {
       this.friendInfo = res.data.data
     },
     sendMessages() {
+      const { id, nickname } = this.friendInfo
       this.$router.push({
         path: '/chat',
         query: {
+          nickname: nickname,
+          roomid: `${id}-${this.userInfo.id}`
         }
       })
     }

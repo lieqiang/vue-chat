@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="chat">
-      <img src="@/assets/mine.jpg" alt="">
+      <img src="@/assets/default.jpg" alt="">
     </div>
     <van-field
       v-model="username"
@@ -79,8 +79,7 @@ export default {
     }
   }
   .sumit {
-    padding-top: 30px;
-    max-width: 90%;
-    margin: 0 auto;
+    padding-top: 50px;
+    margin: 16px;
   }
 </style>

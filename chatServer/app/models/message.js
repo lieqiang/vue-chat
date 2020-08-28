@@ -5,7 +5,11 @@ const messagesSchema = new Schema({
   senderName: String, // 用户登录名
   senderNickname: String, // 用户昵称
   senderSignature: String, // 个性签名
-  senderID: String, // 用户id
+  userid: String,
+  senderID: {
+    type : db.Schema.ObjectId,
+    ref : 'users'
+  },
   avatar: String,
   time: Number, // 时间戳
   message: String, // 消息
@@ -54,7 +58,7 @@ class Message {
       })
       .sort({ 'theDate': -1 })
       .skip(0)
-      .limit(100)
+      .limit(100).populate({ path: 'senderID', select: 'signature avatar nickname' })
     } catch(err) {
       console.log(err)
     }

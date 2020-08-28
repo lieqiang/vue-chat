@@ -12,15 +12,15 @@
           </div>
         </template>
       </van-cell>
-      <template v-for="(item, index) in addressBooks">
+      <template v-for="(item, index) in friendsList">
         <van-index-anchor :key="index" :index="item.title" />
-        <van-cell center v-for="(cell, idx) in item.items" :key="idx" @click="linkToChat(cell.roomid)">
+        <van-cell center v-for="(cell, idx) in item.items" :key="idx" :clickable="true" @click="linkToChat(cell)">
           <template #title>
             <van-image
               round
               width="50"
               height="50"
-              :src="item.src"
+              :src="getAvatar(item.avatar)"
             />
           </template>
           <template #right-icon>
@@ -38,6 +38,7 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { IndexBar, IndexAnchor, Cell, Image as VanImage, Icon } from 'vant'
+import { findMyfriends } from '@/api/user'
 
 Vue.use(IndexBar)
 Vue.use(IndexAnchor)
@@ -48,18 +49,14 @@ export default {
   data() {
     return {
       count: '',
-      addressBooks: [],
+      friendsList: [],
       indexList: []
     }
   },
   computed: {
-    ...mapGetters(['conversationsList', 'adressBooksMessages'])
+    ...mapGetters(['userInfo', 'root', 'adressBooksMessages', 'addressBooksList'])
   },
   watch: {
-    conversationsList(newVal, oldVal) {
-      console.log('newVal', newVal)
-      this.addressBooks = this._normalizeList(newVal)
-    },
     adressBooksMessages(newVal, oldVal) {
       this.getMessagesCount(newVal)
     }
@@ -67,9 +64,22 @@ export default {
   created() {
     console.log('enter')
     this.getMessagesCount(this.adressBooksMessages)
-    this.addressBooks = this._normalizeList(this.conversationsList)
+    this.findMyfriends()
   },
   methods: {
+    async findMyfriends() {
+      const res = await findMyfriends({ userid: this.userInfo.id })
+      if (res.data.error_code !== 0) {
+        return
+      }
+      this.friendsList = this._normalizeList(res.data.data)
+    },
+    getAvatar(avatar) {
+      if (avatar) {
+        return `${this.root}${avatar}`
+      }
+      return require('@/assets/default.jpg')
+    },
     getMessagesCount(newVal) {
       if (!newVal.length) {
         this.count = ''
@@ -114,11 +124,13 @@ export default {
       this.indexList = newFriendIndex.concat(indexList)
       return ret
     },
-    linkToChat(roomid) {
+    linkToChat(cell) {
+      const { roomid, nickname } = cell
       this.$router.push({
         path: '/chat',
         query: {
-          roomid
+          roomid,
+          nickname
         }
       })
     }

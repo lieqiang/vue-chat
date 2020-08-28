@@ -11,14 +11,18 @@ let friendlySchema = new db.Schema({
   },
   createDate: {
     type: Date, default: Date.now()
+  },
+  isInChatChannels: {
+    type: Boolean,
+    default: false
   }
 })
 
 async function findFriendByUserM (userId) {
-  return friendly.find({ senderID: userId }).populate({ path: 'receiverID', select: 'signature avatar nickname' }) // 关联查询
+  return friendly.find({ senderID: userId }).populate({ path: 'receiverID', select: 'signature avatar nickname name' }) // 关联查询
 }
 async function findFriendByUserY (userId) {
-  return friendly.find({ receiverID: userId }).populate({ path: 'senderID', select: 'signature avatar nickname' })
+  return friendly.find({ receiverID: userId }).populate({ path: 'senderID', select: 'signature avatar nickname name' })
 }
 
 let friendly = db.model('friendlies', friendlySchema) // friendly 创建的文档是 friendlies 坑！！！

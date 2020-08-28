@@ -5,8 +5,8 @@
       left-text="新的朋友"
       right-text="添加朋友"
       left-arrow
-      @click-left="back"
-      @click-right="onClickRight"
+      @click-left="$router.go(-1)"
+      @click-right="goSearch"
     />
     <div class="wrapper">
       <van-cell-group class="list">
@@ -21,14 +21,14 @@
               round
               width="50"
               height="50"
-              :src="getAvatar(item)"
+              :src="getAvatar(item.avatar)"
             />
           </template>
           <template #right-icon>
             <div class="right">
               <div class="info">
                 <span class="name">{{ item.senderNickname || item.senderName }}</span>
-                <span class="desc">{{ item.senderSignature }}</span>
+                <span class="desc">{{ item.validationMessage | setValidateMsg }}</span>
               </div>
               <div class="status">
                 <van-button v-if="item.status === '0'" type="primary" size="small" @click.stop="addToAddressBooks(item)">添加</van-button>
@@ -65,7 +65,7 @@ export default {
   name: 'NewFriends',
   sockets: {
     receiveAgreedSuccess(params) {
-      this.$store.dispatch('addToConversationsList', params) // 需优化
+      this.$store.dispatch('addToaddressBooksList', params) // 需优化
       Toast('添加成功')
       this.$router.push({
         path: '/friendDetail',
@@ -73,6 +73,14 @@ export default {
           username: params.name
         }
       })
+    }
+  },
+  filters: {
+    setValidateMsg(remarks) {
+      if (remarks) {
+        return remarks
+      }
+      return '请求添加你为朋友'
     }
   },
   data() {
@@ -90,9 +98,6 @@ export default {
     this.clearSystemMsg()
   },
   methods: {
-    back() {
-      window.history.go(-1)
-    },
     async getNewFriendsMsg() {
       const roomid = this.VchatInfo.roomid
       const res = await getNewFriendsMsg({ roomid })
@@ -108,8 +113,11 @@ export default {
         })
       })
     },
-    getAvatar(item) {
-      return `${this.root}${item.avatar}`
+    getAvatar(avatar) {
+      if (avatar) {
+        return `${this.root}${avatar}`
+      }
+      return require('@/assets/default.jpg')
     },
     clearSystemMsg() {
       this.$store.dispatch('clearAdressBooksMessages')
@@ -128,20 +136,15 @@ export default {
         })
       }
     },
-    onClickRight() {
+    goSearch() {
+      this.$router.push({
+        path: '/search'
+      })
     }
   }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  // scss用变量的形式改造 参考点证
-  .wrapper {
-    position: fixed;
-    top: 46px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
   .van-cell__title {
     flex: 0 0 50px;
   }

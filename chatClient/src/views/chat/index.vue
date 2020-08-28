@@ -1,7 +1,7 @@
 <template>
-  <div :style="{'width': deviceWidth, 'margin': '0 auto'}" class="main-content">
+  <div :style="{'width': deviceWidth, 'margin': '0 auto'}">
     <div class="service-page">
-      <van-nav-bar left-arrow @click-left="back">
+      <van-nav-bar left-arrow @click-left="$router.go(-1)">
         <template #title>
           <span>{{ nickname }}</span>
         </template>
@@ -29,13 +29,13 @@
               v-for="(item,index) in msgList"
               :key="index"
               :ref="'d' + item.id"
-              :class="{mine: item.senderID === userInfo.id, other: item.senderID !== userInfo.id, center: item.info == 1}"
+              :class="{mine: item.userid === userInfo.id, other: item.userid !== userInfo.id, center: item.info == 1}"
             >
               <div class="info-time">{{ item.time | timeFilter('MDHM') }}</div>
               <div class="other-desc">
-                <div v-show="item.senderID !== 'cancel' && item.senderID != '966530'" class="other-face">
-                  <span :class="[item.senderID !== userInfo.id ? 'user-avatar' : 'mine-avatar', 'chat-avatar']">
-                    <img :src="`${root}${item.avatar}`" />
+                <div v-show="item.userid !== 'cancel'" class="other-face">
+                  <span :class="[item.userid !== userInfo.id ? 'user-avatar' : 'mine-avatar', 'chat-avatar']">
+                    <img :src="getAvatar(item)" />
                   </span>
                 </div>
                 <span class="other-info" @contextmenu="stop">
@@ -206,13 +206,15 @@ export default {
         this.initScroll()
       })
     },
-    back() {
-      window.history.go(-1)
+    getAvatar(item) {
+      if (item.senderID.avatar || item.avatar) {
+        return `${this.root}${item.senderID.avatar || item.avatar}`
+      }
+      return require('@/assets/default.jpg')
     },
     iosResizeHandle() {
       const msgInputDom = document.querySelector('.msg-input')
       msgInputDom.addEventListener('blur', () => {
-        console.log('IOS blur')
         const wechatInfo = window.navigator.userAgent.match(/MicroMessenger/i)
         if (!wechatInfo) return
         setTimeout(() => { // fix ios wechat bug
@@ -367,6 +369,7 @@ export default {
         nickname: this.userInfo.nickname,
         avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
         roomid: this.roomid,
+        userid: this.userInfo.id,
         senderID: this.userInfo.id,
         msgType: 'txt',
         read: [this.userInfo.name],
@@ -403,6 +406,7 @@ export default {
         nickname: this.userInfo.nickname,
         avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
         roomid: this.roomid,
+        userid: this.userInfo.id,
         senderID: this.userInfo.id,
         msgType: 'img',
         read: [this.userInfo.name],
@@ -499,10 +503,6 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        // .user-avatar {
-        //   // background: url(../../assets/user.jpg) no-repeat;
-        //   background-size: contain;
-        // }
       }
     }
     .other-info {
@@ -560,10 +560,6 @@ export default {
         flex: 0 0 40px;
         align-items: center;
         justify-content: center;
-        // .mine-avatar {
-        //   // background: url(../../assets/mine.jpg) no-repeat;
-        //   // background-size: cover;
-        // }
       }
     }
     .other-info {
