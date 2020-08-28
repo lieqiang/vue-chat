@@ -11,11 +11,11 @@ export default {
   setIslogin(state, data) {
     state.isLogin = data
   },
-  SET_CONVERSATIONS_LIST(state, data) {
-    state.conversationsList = data
+  SET_ADDRESSBOOKS_LIST(state, data) {
+    state.addressBooksList = data
   },
-  ADD_TO_CONVERSATIONS_LIST(state, data) {
-    state.conversationsList.push(data)
+  ADD_TO_ADDRESSBOOKS_LIST(state, data) {
+    state.addressBooksList.push(data)
   },
   SET_ONLINE_USER(state, data) {
     state.OnlineUser = data

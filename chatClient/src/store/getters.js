@@ -1,7 +1,7 @@
 const getters = {
   root: state => state.root,
   userInfo: state => state.userInfo,
-  conversationsList: state => state.conversationsList,
+  addressBooksList: state => state.addressBooksList,
   VchatInfo: state => state.VchatInfo,
   adressBooksMessages: state => state.adressBooksMessages
 }

@@ -23,15 +23,15 @@ export default {
     },
     receiveAgreedMsg(params) {
       console.log('对方已同意你的好友申请')
-      this.$store.dispatch('addToConversationsList', params) // 需优化
+      this.$store.dispatch('addToaddressBooksList', params) // 需优化
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'conversationsList'])
+    ...mapGetters(['userInfo', 'addressBooksList'])
   },
   watch: {
-    conversationsList(newList, oldList) {
-      this.conversationsList.forEach(item => {
+    addressBooksList(newList, oldList) {
+      this.addressBooksList.forEach(item => {
         if (!this.adressBooks.includes(item.name)) {
           const params = {
             name: this.userInfo.name,
@@ -41,7 +41,7 @@ export default {
           this.$socket.emit('join', params)
           this.adressBooks.push(item.name)
           console.log('客户端加入了', params)
-          console.log('conversationsList', newList)
+          console.log('addressBooksList', newList)
         }
       })
     }
