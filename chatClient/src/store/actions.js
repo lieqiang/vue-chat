@@ -42,12 +42,18 @@ export default {
       })
     })
   },
+  setUserInfo({ commit }, obj) {
+    commit('SET_USER_INFO', obj)
+  },
   updateUserInfo({ commit }, obj) {
     commit('UPDATE_USER_INFO', obj)
   },
-  // setAddressBooksList({ commit }, data) {
-  //   commit('SET_ADDRESSBOOKS_LIST', data)
-  // },
+  setUnReadMsgCounts({ commit }, obj) {
+    commit('SET_UNREAD_MSG_COUNTS', obj)
+  },
+  setTotalUnreadMsgCounts({ commit }, total) {
+    commit('SET_TOTAL_UNREAD_MSG_COUNTS', total)
+  },
   addToaddressBooksList({ commit }, data) {
     commit('ADD_TO_ADDRESSBOOKS_LIST', data)
   },
@@ -56,5 +62,8 @@ export default {
   },
   clearAdressBooksMessages({ commit }) {
     commit('CLEAR_ADRESS_BOOKS_MESSAGES')
+  },
+  setCurrentChatRoomid({ commit }, roomid) {
+    commit('SET_CURRENT_CHAT_ROOMID', roomid)
   }
 }

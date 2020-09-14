@@ -1,13 +1,13 @@
 const { LinValidator, Rule } = require('@core/lin-validator-v2')
-const User = require('@models/user')
+// const User = require('@models/user')
 // const { LoginType, artType } = require('@lib/enum')
 class PositiveIntegerValidator extends LinValidator {
   constructor() {
     super()
     this.id = [
-        new Rule('isInt', 'id需要是正整数', {
-            min: 1
-        })
+      new Rule('isInt', 'id需要是正整数', {
+        min: 1
+      })
     ]
   }
 }
@@ -30,10 +30,10 @@ class RegisterValidator extends LinValidator {
     ]
     // this.password2 = this.password1
     // this.nickname = [
-    //     new Rule('isLength', '昵称不符合长度规范', {
-    //         min: 4,
-    //         max: 32
-    //     }),
+  //     new Rule('isLength', '昵称不符合长度规范', {
+//         min: 4,
+//         max: 32
+  //     }),
     // ]
   }
 
@@ -46,15 +46,15 @@ class RegisterValidator extends LinValidator {
   // }
 
   // async validateEmail(vals) { // 数据 异步操作 需加上 asnc
-  //     const email = vals.body.email
-  //     const user = await User.findOne({
-  //         where: {
-  //             email: email
-  //         }
-  //     })
-  //     if (user) {
-  //         throw new Error('email已经存在')
-  //     }
+//    const email = vals.body.email
+//    const user = await User.findOne({
+//      where: {
+//        email: email
+//      }
+//    })
+//     if (user) {
+//       throw new Error('email已经存在')
+//     }
   // }
 
 }
@@ -63,18 +63,18 @@ class TokenValidator extends LinValidator {
   constructor() {
     super()
     this.account = [
-        new Rule('isLength', '不符合账号规则', {
-            min: 4,
-            max: 32
-        })
+      new Rule('isLength', '不符合账号规则', {
+        min: 4,
+        max: 32
+      })
     ]
     this.secret = [
-        // validator.js
-        new Rule('isOptional'),
-        new Rule('isLength', '至少6个字符', {
-            min: 6,
-            max: 128
-        })
+      // validator.js
+      new Rule('isOptional'),
+      new Rule('isLength', '至少6个字符', {
+        min: 6,
+        max: 128
+      })
     ]
     this.validateType = checkType
   }
@@ -89,35 +89,17 @@ class NotEmptyValidator extends LinValidator {
   }
 }
 
-// function checkType(vals){
-//     let type = vals.body.type || vals.path.type
-//     type = parseInt(type)
-//     // this.parsed.path.type = type lin-validator转型
-//     if(!type){
-//         throw new Error('type是必须参数')
-//     }
-//     if(!LoginType.isThisType(type)){
-//         throw new Error('type参数不合法')
-//     }
-// }
-
-// function checkType2(vals){
-//     let type = vals.body.type || vals.path.type
-//     type = parseInt(type)
-//     // this.parsed.path.type = type lin-validator转型
-//     if(!type){
-//         throw new Error('type是必须参数')
-//     }
-//     if(!artType.isThisType(type)){
-//         throw new Error('type参数不合法')
-//     }
-// }
-// class LikeValidator extends PositiveIntegerValidator {
-//     constructor() {
-//         super()
-//         this.validateType = checkType2
-//     }
-// }
+class MsgHadReadValidator extends LinValidator {
+  constructor() {
+    super()
+    this.name = [
+      new Rule('isLength', 'name不能为空', { min: 1 })
+    ]
+    this.roomid = [
+      new Rule('isLength', 'roomid不能为空', { min: 1 })
+    ]
+  }
+}
 
 class SearchValidator extends LinValidator {
   constructor() {
@@ -145,24 +127,11 @@ class SearchValidator extends LinValidator {
   }
 }
 
-class AddShortCommentValidator extends PositiveIntegerValidator {
-  constructor() {
-    super()
-    this.content = [
-      new Rule('isLength', '必须在1到12个字符之间', {
-        min: 1,
-        max: 12
-      })
-    ]
-  }
-}
-
 module.exports = {
   PositiveIntegerValidator,
   RegisterValidator,
   TokenValidator,
   NotEmptyValidator,
-  // LikeValidator,
   SearchValidator,
-  AddShortCommentValidator
+  MsgHadReadValidator
 }

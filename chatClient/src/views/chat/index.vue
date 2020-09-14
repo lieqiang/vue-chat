@@ -39,7 +39,7 @@
                   </span>
                 </div>
                 <span class="other-info" @contextmenu="stop">
-                  <msg-item :item="item" :quesid="questionInfo.quesid" @image-view-change="showImageView"/>
+                  <msg-item :item="item" @image-view-change="showImageView"/>
                 </span>
               </div>
             </div>
@@ -51,7 +51,7 @@
         </div>
       </div>
       <!-- 工具条 -->
-      <div v-show="questionInfo.sts != 2" :style="{'width': deviceWidth, 'margin': '0 auto', 'bottom': isFaceShow ? '189px' : '0'}" class="chat-container-footer">
+      <div :style="{'width': deviceWidth, 'margin': '0 auto', 'bottom': isFaceShow ? '189px' : '0'}" class="chat-container-footer">
         <div :class="[deviceWidth === '750px' ? 'pc-bd pc-b-t' : 'b-t']" class="chat-bottom-bar" @click.stop="stop">
           <div :class="[deviceWidth === '750px' ? 'pc-b-b' : 'b-b']" class="msg-input-wrap">
             <input ref="input" v-model="chatText" type="text" class="msg-input" @focus.stop="focus">
@@ -102,7 +102,7 @@ import { NavBar, Toast, Button, Loading, Empty } from 'vant'
 import msgItem from './msgItem'
 import Face from '@/components/face'
 import { EMOJI_LIST } from '@/utils/face'
-import { getHistoryMsg } from '@/api/message'
+import { setMsgHadRead, getHistoryMsg } from '@/api/message'
 import { uploadImg } from '@/api/upload'
 BScroll.use(PullDown)
 Vue.use(Viewer)
@@ -118,7 +118,6 @@ export default {
   mixins: [PopupMixin],
   data: function() {
     return {
-      questionInfo: {},
       face: EMOJI_LIST,
       chatText: '',
       isMsgLoadingShow: false,
@@ -136,11 +135,16 @@ export default {
       txtReg: /\[[^(\)|\[)]*\]+?$/, // eslint-disable-line
       isSendBtnShow: false,
       roomid: '',
+      name: '',
       nickname: ''
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'root'])
+    ...mapGetters([
+      'userInfo',
+      'root',
+      'currentChatRoomid'
+    ])
   },
   watch: {
     chatText(n, o) {
@@ -172,6 +176,8 @@ export default {
     const { roomid, nickname } = this.$route.query
     this.roomid = roomid
     this.nickname = nickname
+    this.$store.dispatch('setCurrentChatRoomid', roomid)
+    this.setMsgHadRead()
     this.getHistoryMsg(roomid)
   },
   mounted() {
@@ -179,22 +185,41 @@ export default {
       this.calculateHeight()
     })
   },
+  destroyed() {
+    this.$store.dispatch('setCurrentChatRoomid', null)
+  },
   sockets: {
-    receivingMsg(params) {
-      console.log('收到新消息', params)
-      this.msgList.push(params)
-    },
     sendMsgSuccess(params) {
-      console.log('发送消息成功', params)
       this.chatText = ''
       this.msgList.push(params)
       this.$nextTick(() => {
         this.scroll.refresh()
         this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
       })
+    },
+    receivingMsg(params) {
+      if (this.currentChatRoomid === params.roomid) {
+        this.msgList.push(params)
+        this.$nextTick(() => {
+          this.scroll.refresh()
+          this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
+        })
+      }
     }
   },
   methods: {
+    async setMsgHadRead() {
+      const params = {
+        name: this.userInfo.name,
+        roomid: this.roomid
+      }
+      const res = await setMsgHadRead(params)
+      if (res.data.error_code !== 0) {
+        Toast(res.data.msg)
+        return
+      }
+      this.$store.dispatch('setUnReadMsgCounts', { msgList: [], item: params })
+    },
     async getHistoryMsg(roomid) {
       const res = await getHistoryMsg({ roomid })
       if (res.data.error_code !== 0) {
@@ -252,13 +277,6 @@ export default {
         this.scroll.enable()
       }
     },
-    // addNewMsg(newMsg) {
-    //   this.msgList.push(newMsg)
-    //   this.$nextTick(() => {
-    //     this.scroll.refresh() // 必须
-    //     this.scroll.scrollTo(0, this.scroll.maxScrollY, 0)
-    //   })
-    // },
     showImageView(src) {
       this.imgSrc = src
       const viewer = this.$el.querySelector('#view-images').$viewer
@@ -309,25 +327,22 @@ export default {
     scrollTo(y, time) {
       this.scroll.scrollTo(0, y, time)
     },
-    // finishPullDown() {
-    //   this.scroll.finishPullDown()
-    // },
     focus() {
       if (this.isFaceShow) {
         this.isFaceShow = false
       }
     },
     handleSelectFace(item) {
-      this.chatText = this.chatText + '[' + item.txt + ']' // 服务器发送内容
+      this.chatText = this.chatText + '[' + item.txt + ']'
     },
     deleteText() {
       if (!this.chatText) {
         return
       }
-      if (this.txtReg.test(this.chatText)) { // 如果字符串最后匹配到中括号
+      if (this.txtReg.test(this.chatText)) {
         const lastIndex = this.chatText.lastIndexOf('[')
         const lastIndex2 = this.chatText.lastIndexOf(']')
-        if ((lastIndex2 - 1) - lastIndex === 4 || (lastIndex2 - 1) - lastIndex === 5) { // 删除表情
+        if ((lastIndex2 - 1) - lastIndex === 4 || (lastIndex2 - 1) - lastIndex === 5) {
           this.chatText = this.chatText.replace(this.txtReg, '')
         } else {
           this.chatText = this.chatText.substr(0, this.chatText.length - 1)

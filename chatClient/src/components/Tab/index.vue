@@ -1,8 +1,8 @@
 <template>
-  <div class="tab">
+  <div class="tab van-hairline--top-bottom">
     <router-link tag="div" class="tab-item" to="/home">
       <span class="tab-icon">
-        <van-icon :color="activeColor('/home')" name="chat-o" size="20" badge="10" />
+        <van-icon :color="activeColor('/home')" name="chat-o" size="20" :badge="totalUnreadMsgCounts | countFilter" />
       </span>
       <span class="tab-link">聊天</span>
     </router-link>
@@ -33,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['adressBooksMessages'])
+    ...mapGetters(['totalUnreadMsgCounts', 'adressBooksMessages'])
   },
   watch: {
     adressBooksMessages(newVal, oldVal) {
@@ -66,7 +66,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
   .tab {
     display: flex;
-    height: 50px;
+    height: 52px;
     font-size: 12px;
     position: fixed;
     bottom: 0;
@@ -79,14 +79,14 @@ export default {
       flex: 1;
       text-align: center;
       .tab-link {
-        padding-bottom: 5px;
         color: #666;
       }
       .tab-icon, .tab-link {
         display: block;
       }
       .tab-icon {
-        margin-top: 6px;
+        height: 21px;
+        margin-top: 9px;
       }
     }
     .router-link-active {

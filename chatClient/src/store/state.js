@@ -5,8 +5,10 @@ export default {
     id: null
   },
   addressBooksList: [],
-  OnlineUser: {}, // 在线人数
-  unRead: [], // 未读消息
-  VchatInfo: {}, // 官方账号信息
-  adressBooksMessages: []
+  OnlineUser: {},
+  unReadMsgCountList: [],
+  totalUnreadMsgCounts: 0,
+  VchatInfo: {},
+  adressBooksMessages: [],
+  currentChatRoomid: null
 }

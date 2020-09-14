@@ -14,7 +14,7 @@ let friendlySchema = new db.Schema({
   },
   isInChatChannels: {
     type: Boolean,
-    default: false
+    default: true
   }
 })
 

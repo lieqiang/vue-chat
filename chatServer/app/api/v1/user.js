@@ -93,8 +93,6 @@ router.get('findMyfriends', async(ctx) => {
   if (userid) {
     const { senderID, receiverID } = await findMyfriends(userid)
     const data = []
-    console.log('senderID', senderID)
-    console.log('receiverID', receiverID)
     senderID.forEach(v => {
       data.push({
         createDate: v.createDate,
@@ -110,6 +108,7 @@ router.get('findMyfriends', async(ctx) => {
     receiverID.forEach(v => {
       data.push({
         createDate: v.createDate,
+        name: v.senderID.name,
         nickname: v.senderID.nickname,
         avatar: v.senderID.avatar,
         signature: v.senderID.signature,

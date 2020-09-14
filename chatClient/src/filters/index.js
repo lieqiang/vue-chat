@@ -40,3 +40,10 @@ function addZero(val) {
     return val
   }
 }
+
+export function countFilter(count) {
+  if (!count) {
+    return ''
+  }
+  return count
+}

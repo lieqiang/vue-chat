@@ -15,3 +15,11 @@ export function getHistoryMsg(query) {
     params: query
   })
 }
+
+export function setMsgHadRead(query) {
+  return request({
+    url: '/message/setMsgHadRead',
+    method: 'post',
+    data: query
+  })
+}

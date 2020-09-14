@@ -11,9 +11,9 @@ const messagesSchema = new Schema({
     ref : 'users'
   },
   avatar: String,
-  time: Number, // 时间戳
-  message: String, // 消息
-  read: Array, // 是否已读 0/1
+  time: Number,
+  message: String,
+  read: Array,
   groupId: String, // 加入群聊id
   groupName: String, // 加入群聊名称
   // groupPhoto: String, // 加入群聊头像
@@ -27,14 +27,13 @@ const messagesSchema = new Schema({
   msgType: String,
   status: String, // 0 未操作 1 同意 2 拒绝
   validationMessage: String,
-  remarks: String // 备注
+  remarks: String
 })
 
 const messages = db.model('messages', messagesSchema)
 class Message {
   constructor() {}
   async saveMessage(params) {
-    console.log('params', params)
     return await messages.create(params)
   }
   async getSystemMessages(roomid) {
@@ -56,9 +55,14 @@ class Message {
           '$ne': 'validate'
         }
       })
-      .sort({ 'theDate': -1 })
+      .sort({
+        'theDate': -1 
+      })
       .skip(0)
-      .limit(100).populate({ path: 'senderID', select: 'signature avatar nickname' })
+      .limit(100).populate({
+        path: 'senderID',
+        select: 'signature avatar nickname'
+      })
     } catch(err) {
       console.log(err)
     }
@@ -66,6 +70,22 @@ class Message {
   async setMessageStatus(params) {
     return await messages.updateOne({ senderID: params.senderID }, { $set: { status: params.status } }, { upsert: true })
   }
+
+  async setMsgHadRead(params) {
+    try {
+      const res = await messages.find({ 'roomid': params.roomid })
+      res.forEach((item) => {
+        if (!item.read.includes(params.name)) {
+          item.read.push(params.name)
+          item.save()
+        }
+      })
+      return res
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
 }
 
 module.exports = {

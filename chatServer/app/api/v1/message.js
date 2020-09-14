@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const { Message } = require('@models/message')
-// const { Success } = require('@core/http-exception')
+const { MsgHadReadValidator } = require('@validator/validator')
 const router = new Router({
   prefix: '/v1/message/'
 })
@@ -21,12 +21,30 @@ router.get('getHistoryMsg', async (ctx) => {
   console.log('roomId', roomid)
   const message = new Message()
   const res = await message.getHistoryMsg(roomid)
-  // if (!res.length) {
-  //   throw new Success('获取历史消息失败', -1)
-  // }
   ctx.body = {
     error_code: 0,
     data: res
+  }
+})
+
+router.post('setMsgHadRead', async (ctx) => {
+  const v = await new MsgHadReadValidator().validate(ctx)
+  const params = {
+    name: v.get('body.name'),
+    roomid: v.get('body.roomid')
+  }
+  const message = new Message()
+  const res = await message.setMsgHadRead(params)
+  if (typeof(res) === 'object') {
+    ctx.body = {
+      error_code: 0,
+      data: res
+    }
+  } else {
+    ctx.body = {
+      error_code: -1,
+      msg: '设置消息为已读失败'
+    }
   }
 })
 

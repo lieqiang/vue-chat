@@ -5,8 +5,13 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import { mapGetters } from 'vuex'
+import { Toast } from 'vant'
+import { getHistoryMsg } from '@/api/message'
 import { parseTime } from '@/utils'
+Vue.use(Toast)
+
 export default {
   data() {
     return {
@@ -23,54 +28,71 @@ export default {
     },
     receiveAgreedMsg(params) {
       console.log('对方已同意你的好友申请')
-      this.$store.dispatch('addToaddressBooksList', params) // 需优化
+      this.$store.dispatch('addToaddressBooksList', params)
+    },
+    receivingMsg(params) {
+      if (!this.currentChatRoomid) {
+        this.$store.dispatch('setUnReadMsgCounts', { msgList: [params], item: params, isNewMsg: true })
+      }
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'addressBooksList'])
+    ...mapGetters([
+      'userInfo',
+      'VchatInfo',
+      'addressBooksList',
+      'totalUnreadMsgCounts',
+      'currentChatRoomid'
+    ])
   },
   watch: {
+    userInfo(n, o) {
+      const params = {
+        name: n.name,
+        time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+        roomid: n.roomid
+      }
+      this.$socket.emit('join', params)
+    },
+    VchatInfo(n, o) {
+      const params = {
+        name: n.name,
+        time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
+        roomid: n.roomid
+      }
+      this.$socket.emit('join', params)
+    },
     addressBooksList(newList, oldList) {
-      this.addressBooksList.forEach(item => {
+      newList.forEach(item => {
         if (!this.adressBooks.includes(item.name)) {
           const params = {
-            name: this.userInfo.name,
+            name: item.name,
             time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
             roomid: item.roomid
           }
           this.$socket.emit('join', params)
           this.adressBooks.push(item.name)
-          console.log('客户端加入了', params)
-          console.log('addressBooksList', newList)
+          this.getHistoryMsg(item)
         }
       })
     }
   },
-  created() {},
   methods: {
-
+    async getHistoryMsg(item) {
+      const { roomid } = item
+      const res = await getHistoryMsg({ roomid })
+      if (res.data.error_code !== 0) {
+        Toast(res.data.msg)
+        return
+      }
+      this.$store.dispatch('setUnReadMsgCounts', { msgList: res.data.data, item: item })
+    }
   }
 }
 </script>
 <style>
 #app {
-  /* font-family: Avenir, Helvetica, Arial, sans-serif; */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* text-align: center; */
-  /* color: #2c3e50; */
 }
-
-/* #nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-} */
 </style>

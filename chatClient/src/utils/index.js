@@ -52,3 +52,11 @@ export function isEmpty(obj) {
     return false
   }
 }
+
+export function findIndex(list, id) {
+  for (var i = 0; i < list.length; i++) {
+    if (list[i].roomid === id) {
+      return i
+    }
+  }
+}
