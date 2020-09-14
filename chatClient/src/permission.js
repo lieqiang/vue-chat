@@ -13,10 +13,14 @@ router.beforeEach((to, from, next) => {
         path: '/'
       })
     } else {
-      if (store.getters.conversationsList.length === 0) {
+      if (!store.getters.userInfo.id) {
         store.dispatch('getUserInfo').then((res) => {
           store.dispatch('getVchatInfo').then(res => {
-            next()
+            store.dispatch('getAddressBooksList').then(res => {
+              next()
+            }).catch(err => {
+              Toast(err)
+            })
           }).catch(err => {
             Toast(err)
           })
