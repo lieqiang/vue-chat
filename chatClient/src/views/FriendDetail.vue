@@ -12,7 +12,7 @@
             round
             width="50"
             height="50"
-            src=""
+            :src="getAvatar(friendInfo.avatar)"
           />
         </template>
         <template #right-icon>
@@ -65,7 +65,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo'])
+    ...mapGetters(['userInfo', 'root'])
   },
   created() {
     const { username } = this.$route.query
@@ -79,6 +79,12 @@ export default {
         return
       }
       this.friendInfo = res.data.data
+    },
+    getAvatar(avatar) {
+      if (avatar) {
+        return `${this.root}${avatar}`
+      }
+      return require('@/assets/default.jpg')
     },
     sendMessages() {
       const { id, nickname } = this.friendInfo

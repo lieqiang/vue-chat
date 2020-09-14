@@ -135,10 +135,6 @@ class User {
     }
   }
 
-  static async addToConversitionList(userName, params) {
-    return await users.updateOne({ name: userName }, {$push: { conversationsList: params }})
-  }
-
   static async updateUserInfo(params) {
     return await users.updateOne({ name: params.name }, { $set: params.field }, { upsert: true })
   }

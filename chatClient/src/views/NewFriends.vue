@@ -8,7 +8,7 @@
       @click-left="$router.go(-1)"
       @click-right="goSearch"
     />
-    <div class="wrapper">
+    <div class="main-content">
       <van-cell-group class="list">
         <van-cell
           center
@@ -107,7 +107,7 @@ export default {
       this.list = res.data.data
       console.log(this.list)
       this.$nextTick(() => {
-        const wrapper = document.querySelector('.wrapper')
+        const wrapper = document.querySelector('.main-content')
         const scroll = new BScroll(wrapper, { // eslint-disable-line
           click: true
         })

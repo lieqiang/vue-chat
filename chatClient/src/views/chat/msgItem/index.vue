@@ -9,10 +9,6 @@ export default {
       default: function() {
         return {}
       }
-    },
-    quesid: {
-      type: Number,
-      default: null
     }
   },
   data() {

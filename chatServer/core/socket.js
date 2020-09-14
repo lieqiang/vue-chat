@@ -1,8 +1,6 @@
 const io = require('socket.io')(global.server)
-const { User } = require('@models/user')
 const { Message } = require('@models/message')
 const { addFriend } = require('@models/friendly')
-const { params } = require('../app/api/v1/user')
 const OnlineUser = {}
 io.on('connection', (socket) => {
   socket.on('join', (params) => {
@@ -37,10 +35,6 @@ io.on('connection', (socket) => {
           roomid: params.roomid,
           type: 'friend'
         }
-        User.addToConversitionList(senderParams.name, receiverParams)
-        User.addToConversitionList(receiverParams.name, senderParams)
-        console.log('senderParams', senderParams)
-        console.log('receiverParams', receiverParams)
         const message = new Message()
         message.setMessageStatus(pr) // 设置消息状态 为 已通过
         socket.to(roomid).emit('receiveAgreedMsg', receiverParams) // 添加好友方接收消息

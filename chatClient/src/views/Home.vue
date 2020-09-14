@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar fixed left-text="聊天(10)">
+    <van-nav-bar fixed :left-text="`聊天(${list.length})`">
       <template #right>
         <!-- <van-icon name="search" size="18" @click="search" /> -->
         <van-icon name="add-o" size="18" class="ml-20" @click="isAddShow = true" />
@@ -11,12 +11,15 @@
         <van-cell-group class="list">
           <van-cell center v-for="(item, index) in list" :key="index" @click="linkToChat(item)">
             <template #title>
-              <van-image
-                round
-                width="50"
-                height="50"
-                :src="getAvatar(item.avatar)"
-              />
+              <div class="pos-r">
+                <van-image
+                  round
+                  width="50"
+                  height="50"
+                  :src="getAvatar(item.avatar)"
+                />
+                <span class="info">{{ item.unReadCounts | countFilter }}</span>
+              </div>
             </template>
             <template #right-icon>
               <div class="right">
@@ -50,11 +53,17 @@ export default {
   data() {
     return {
       isAddShow: false,
-      list: []
+      list: [],
+      totalUnReadMsgCount: 0
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'root', 'addressBooksList'])
+    ...mapGetters([
+      'userInfo',
+      'root',
+      'addressBooksList',
+      'unReadMsgCountList'
+    ])
   },
   watch: {
     addressBooksList(newList, oldList) {
@@ -97,7 +106,7 @@ export default {
   .scroll-wrapper {
     position: fixed;
     top: 46px;
-    bottom: 44px;
+    bottom: 52px;
     left: 0;
     right: 0;
   }
@@ -108,6 +117,25 @@ export default {
   }
   .van-cell__title {
     flex: 0 0 50px;
+  }
+  .pos-r {
+    position: relative;
+  }
+  .info {
+    position: absolute;
+    top: 0;
+    right: 0;
+    box-sizing: border-box;
+    min-width: 16px;
+    padding: 0 3px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    background-color: #ee0a24;
+    border-radius: 16px;
+    transform: translate(30%, -30%);
+    transform-origin: 100%;
   }
   .right {
     display: flex;

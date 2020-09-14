@@ -20,7 +20,7 @@
               round
               width="50"
               height="50"
-              :src="getAvatar(item.avatar)"
+              :src="getAvatar(cell.avatar)"
             />
           </template>
           <template #right-icon>
@@ -38,7 +38,6 @@
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
 import { IndexBar, IndexAnchor, Cell, Image as VanImage, Icon } from 'vant'
-import { findMyfriends } from '@/api/user'
 
 Vue.use(IndexBar)
 Vue.use(IndexAnchor)
@@ -54,7 +53,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['userInfo', 'root', 'adressBooksMessages', 'addressBooksList'])
+    ...mapGetters([
+      'userInfo',
+      'root',
+      'adressBooksMessages',
+      'addressBooksList'
+    ])
   },
   watch: {
     adressBooksMessages(newVal, oldVal) {
@@ -64,16 +68,9 @@ export default {
   created() {
     console.log('enter')
     this.getMessagesCount(this.adressBooksMessages)
-    this.findMyfriends()
+    this.friendsList = this._normalizeList(this.addressBooksList)
   },
   methods: {
-    async findMyfriends() {
-      const res = await findMyfriends({ userid: this.userInfo.id })
-      if (res.data.error_code !== 0) {
-        return
-      }
-      this.friendsList = this._normalizeList(res.data.data)
-    },
     getAvatar(avatar) {
       if (avatar) {
         return `${this.root}${avatar}`
@@ -103,7 +100,8 @@ export default {
           name: item.name,
           nickname: item.nickname,
           id: item.id,
-          roomid: item.roomid
+          roomid: item.roomid,
+          avatar: item.avatar
         })
       })
       const ret = []
@@ -119,7 +117,6 @@ export default {
       indexList.sort((a, b) => {
         return a.charCodeAt(0) - b.charCodeAt(0)
       })
-      console.log(ret)
       const newFriendIndex = ['#']
       this.indexList = newFriendIndex.concat(indexList)
       return ret
@@ -139,7 +136,7 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
   .list {
-    padding-bottom: 44px;
+    padding-bottom: 52px;
   }
   .van-cell__title {
     flex: 0 0 50px;
