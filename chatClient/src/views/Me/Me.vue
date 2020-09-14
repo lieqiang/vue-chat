@@ -18,13 +18,17 @@
         </template>
       </van-cell>
     </van-cell-group>
+    <div style="margin: 16px;">
+      <van-button type="default" block @click="loginout">退出</van-button>
+    </div>
   </div>
 </template>
 <script>
 import Vue from 'vue'
 import { mapGetters } from 'vuex'
-import { Icon, Cell, CellGroup, Toast, Image as VanImage } from 'vant'
-Vue.use(Icon).use(Cell).use(CellGroup).use(Toast).use(VanImage)
+import { Icon, Cell, CellGroup, Toast, Image as VanImage, Button } from 'vant'
+import { removeToken } from '@/utils/auth'
+Vue.use(Icon).use(Cell).use(CellGroup).use(Toast).use(VanImage).use(Button)
 export default {
   name: 'Me',
   data() {
@@ -33,7 +37,15 @@ export default {
   computed: {
     ...mapGetters(['userInfo'])
   },
-  methods: {}
+  methods: {
+    loginout() {
+      removeToken()
+      this.$store.dispatch('setUserInfo', {})
+      this.$router.push({
+        path: '/signin'
+      })
+    }
+  }
 }
 </script>
 
