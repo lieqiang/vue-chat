@@ -21,24 +21,26 @@ io.on('connection', (socket) => {
           status: '1',
           senderID: params.senderID
         }
-        const senderParams = { // 加nickname
+        const senderParams = {
+          type: 'friend',
           name: params.senderName,
           nickname: params.senderNickname,
           avatar: '',
           roomid: params.roomid,
-          type: 'friend'
+          isInChatChannels: true
         }
         const receiverParams = {
+          type: 'friend',
           name: params.receiverName,
           nickname: params.receiverNickname,
           avatar: '',
           roomid: params.roomid,
-          type: 'friend'
+          isInChatChannels: true
         }
         const message = new Message()
-        message.setMessageStatus(pr) // 设置消息状态 为 已通过
+        message.setMessageStatus(pr)
         socket.to(roomid).emit('receiveAgreedMsg', receiverParams) // 添加好友方接收消息
-        socket.emit('receiveAgreedSuccess', senderParams) // 同意添加好友方接收消息 .in(params.receiverSystemRoomID)
+        socket.emit('receiveAgreedSuccess', senderParams) // 同意添加好友方接收消息
       }
     })
   })
