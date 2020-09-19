@@ -13,7 +13,6 @@ router.post('/', async (ctx, next) => {
     username: v.get('body.username'),
     password: v.get('body.password')
   }
-  console.log('userParams', userParams)
   const user = await User.getUser(userParams)
   if (!user.length) {
     throw new Success('用户名或密码错误', -1)
@@ -31,7 +30,6 @@ router.post('/verify', async (ctx) => {
     username: v.get('body.username'),
     password: v.get('body.password')
   }
-  console.log('userParams', userParams)
   const user = await User.getUser(userParams)
   if (!user.length) {
     throw new Success('用户名或密码错误', -1)

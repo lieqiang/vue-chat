@@ -66,20 +66,24 @@ class User {
       signature: 'chat官方团队',
       nickname: 'chat小助手'
     }
-    // upsert:true:存在该数据则修改，不存在则添加
+    // upsert: true 存在该数据则修改，不存在则添加
     const res = await users.updateOne({ name: 'Vchat' }, { $set: info }, { upsert: true })
-    console.log('nModified', res.nModified)
   }
 
   static async signup(params) {
     users.collection.dropIndexes()
-    const res = await users.find({name: params.username})
+    const res = await users.find({
+      name: params.username
+    })
     if (res.length) {
       return {
         code: 1
       }
     }
-    const response = await users.create({ name: params.username, pass: params.password })
+    const response = await users.create({
+      name: params.username,
+      pass: params.password
+    })
     if (response['_id']) {
       return {
         code: 0
@@ -91,7 +95,10 @@ class User {
   }
 
   static async getUser(params) {
-    return await users.find({name: params.username, pass: params.password})
+    return await users.find({
+      name: params.username,
+      pass: params.password
+    })
   }
 
   static async getUserInfo(username) {
@@ -136,7 +143,13 @@ class User {
   }
 
   static async updateUserInfo(params) {
-    return await users.updateOne({ name: params.name }, { $set: params.field }, { upsert: true })
+    return await users.updateOne({
+      name: params.name
+    }, {
+      $set: params.field
+    }, {
+      upsert: true
+    })
   }
 }
 

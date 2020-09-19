@@ -5,15 +5,15 @@ const OnlineUser = {}
 io.on('connection', (socket) => {
   socket.on('join', (params) => {
     socket.join(params.roomid, () => {
-      console.log(params.name, '加入了roomid', params.roomid)
       OnlineUser[params.name] = socket.id
-      io.in(params.roomid).emit('joined', OnlineUser) // 包括发送者
-      console.log(params.name, 'join', params.roomid, OnlineUser)
+      if (params.name !== 'Vchat') {
+        io.in(params.roomid).emit('joined', OnlineUser) // 包括发送者
+        console.log('join', params.name, params.roomid, OnlineUser)
+      }
     })
   })
 
   socket.on('agreeAdd', (params) => {
-    console.log('agreeAdd params', params)
     addFriend(params, (res) => {
       if (res.code === 0) {
         const roomid = `${params.senderID}-${params.receiverSystemRoomID.split('-')[1]}`
@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
           type: 'friend',
           name: params.senderName,
           nickname: params.senderNickname,
-          avatar: '',
+          avatar: params.senderAvatar,
           roomid: params.roomid,
           isInChatChannels: true
         }
@@ -33,7 +33,7 @@ io.on('connection', (socket) => {
           type: 'friend',
           name: params.receiverName,
           nickname: params.receiverNickname,
-          avatar: '',
+          avatar: params.receiverAvatar,
           roomid: params.roomid,
           isInChatChannels: true
         }
@@ -46,10 +46,9 @@ io.on('connection', (socket) => {
   })
 
   socket.on('sendVerificationMessage', (params) => {
-    console.log('sendVerificationMessage')
     const message = new Message()
     message.saveMessage(params)
-    socket.emit('sendVerificationSuccess') // 添加方(发送验证请求方) .in(roomid)
+    socket.emit('sendVerificationSuccess') // 添加方(发送验证请求方)
     socket.to(params.receiverSystemRoomID).emit('receivingVerificationMessage', params) // 接收方(一人)
   })
 
@@ -57,7 +56,6 @@ io.on('connection', (socket) => {
     const message = new Message()
     message.saveMessage(params)
     socket.emit('sendMsgSuccess', params)
-    console.log('params.roomid', params.roomid)
     socket.to(params.roomid).emit('receivingMsg', params)
   })
 })

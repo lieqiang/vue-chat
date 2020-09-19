@@ -19,13 +19,23 @@ let friendlySchema = new db.Schema({
 })
 
 async function findFriendByUserM (userId) {
-  return friendly.find({ senderID: userId }).populate({ path: 'receiverID', select: 'signature avatar nickname name' }) // 关联查询
+  return friendly.find({
+    senderID: userId
+  }).populate({
+    path: 'receiverID',
+    select: 'signature avatar nickname name'
+  })
 }
 async function findFriendByUserY (userId) {
-  return friendly.find({ receiverID: userId }).populate({ path: 'senderID', select: 'signature avatar nickname name' })
+  return friendly.find({
+    receiverID: userId
+  }).populate({
+    path: 'senderID',
+    select: 'signature avatar nickname name'
+  })
 }
 
-let friendly = db.model('friendlies', friendlySchema) // friendly 创建的文档是 friendlies 坑！！！
+let friendly = db.model('friendlies', friendlySchema)
 
 const findMyfriends = async (userId) => {
   const senderID = await findFriendByUserM(userId)
@@ -37,7 +47,7 @@ const findMyfriends = async (userId) => {
 }
 
 const checkMyfriends = (params, callback) => { // 验证是否已加为好友
-//   checkMyfriends() { // 检查是否是我的好友，是否可以不发送请求？
+//   checkMyfriends() { // 检查是否是我的好友，是否可以不发送请求
 //     let params = {
 //         userM: this.$route.params.id,
 //         userY: this.user.id
@@ -48,16 +58,19 @@ const checkMyfriends = (params, callback) => { // 验证是否已加为好友
 //         }
 //     })
 // }
-  let pr = {userM: params.userY, userY: params.userM};
+  let pr = {
+    userM: params.userY,
+    userY: params.userM
+  }
   friendly.find(params).then(r => { // 类似下面的写法，别学
     if (r.length > 0) {
       callback({code: 0, data: true})
     } else {
       friendly.find(pr).then(r => {
         if (r.length > 0) {
-          callback({code: 0, data: true})
+          callback({ code: 0, data: true })
         } else {
-          callback({code: 0, data: false})
+          callback({ code: 0, data: false })
         }
       })
     }
@@ -67,7 +80,6 @@ const checkMyfriends = (params, callback) => { // 验证是否已加为好友
 }
 
 const addFriend = (params, callback) => {
-  console.log('paramssss', params)
   let pr = {
     senderID: params.senderID,
     receiverID: params.receiverID
@@ -80,16 +92,13 @@ const addFriend = (params, callback) => {
       if (!(m.length + y.length)) {
         friendly.create(pr).then(r => {
           if (r['_id']) {
-            callback({code: 0})
-            console.log('code 0')
+            callback({ code: 0 })
           } else {
-            callback({code: -1})
-            console.log('code 1')
+            callback({ code: -1 })
           }
         })
       } else {
-        callback({code: -3})
-        console.log('code 3')
+        callback({ code: -3 })
       }
     })
   })

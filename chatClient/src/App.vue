@@ -23,11 +23,9 @@ export default {
       console.log('joined', OnlineUser)
     },
     receivingVerificationMessage(data) {
-      console.log(data)
       this.$store.dispatch('addAdressBooksMessages', data)
     },
     receiveAgreedMsg(params) {
-      console.log('对方已同意你的好友申请')
       this.$store.dispatch('addToaddressBooksList', params)
     },
     receivingMsg(params) {
@@ -46,14 +44,6 @@ export default {
     ])
   },
   watch: {
-    userInfo(n, o) {
-      const params = {
-        name: n.name,
-        time: parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
-        roomid: n.roomid
-      }
-      this.$socket.emit('join', params)
-    },
     VchatInfo(n, o) {
       const params = {
         name: n.name,

@@ -19,6 +19,6 @@ InitManager.initCore(app)
 var cors = require('koa2-cors')
 app.use(cors())
 server.listen(8090, () => {
-  console.log('服务器在8090启动')
+  console.log('server listen at 8090')
 })
 

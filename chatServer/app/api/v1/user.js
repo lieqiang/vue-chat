@@ -13,7 +13,6 @@ router.post('signup', async (ctx) => {
     password: v.get('body.password')
   }
   const res= await User.signup(user)
-  console.log('res', res)
   if (res.code === 1) {
     throw new Success('该用户名已注册', -1)
   }
@@ -72,7 +71,6 @@ router.get('search', async (ctx) => {
   const txt = ctx.request.query.txt
   if (txt) {
     const res = await User.search(txt)
-    console.log(res)
     if (!res) {
       ctx.body = {
         error_code: 0,
@@ -127,9 +125,7 @@ router.get('findMyfriends', async(ctx) => {
 router.post('updateUserInfo', async (ctx) => {
   const params = ctx.request.body
   const res = await User.updateUserInfo(params)
-  console.log('modify', res)
   if (!res.nModified === 1) {
-    console.log('修改成功', res)
     ctx.body = {
       error_code: -1
     }

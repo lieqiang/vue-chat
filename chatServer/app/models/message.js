@@ -38,7 +38,9 @@ class Message {
   }
   async getSystemMessages(roomid) {
     try {
-      return await messages.find({ receiverSystemRoomID: roomid })
+      return await messages.find({
+        receiverSystemRoomID: roomid
+      })
       .sort({ 'time': -1 })
       .skip(0)
       .limit(100).populate({
@@ -71,12 +73,22 @@ class Message {
     }
   }
   async setMessageStatus(params) {
-    return await messages.updateOne({ senderID: params.senderID }, { $set: { status: params.status } }, { upsert: true })
+    return await messages.updateOne({
+      senderID: params.senderID
+    }, {
+        $set: {
+          status: params.status
+        }
+      }, {
+        upsert: true
+      })
   }
 
   async setMsgHadRead(params) {
     try {
-      const res = await messages.find({ 'roomid': params.roomid })
+      const res = await messages.find({
+        roomid: params.roomid
+      })
       res.forEach((item) => {
         if (!item.read.includes(params.name)) {
           item.read.push(params.name)

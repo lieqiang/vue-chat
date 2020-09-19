@@ -66,7 +66,6 @@ export default {
     }
   },
   created() {
-    console.log('enter')
     this.getMessagesCount(this.adressBooksMessages)
     this.friendsList = this._normalizeList(this.addressBooksList)
   },

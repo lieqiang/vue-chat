@@ -105,7 +105,6 @@ export default {
         return
       }
       this.list = res.data.data
-      console.log(this.list)
       this.$nextTick(() => {
         const wrapper = document.querySelector('.main-content')
         const scroll = new BScroll(wrapper, { // eslint-disable-line
@@ -123,7 +122,6 @@ export default {
       this.$store.dispatch('clearAdressBooksMessages')
     },
     addToAddressBooks(item) {
-      console.log('agreeAdd', item)
       this.$socket.emit('agreeAdd', item)
     },
     linkToFriendDetail(item) {
