@@ -180,9 +180,9 @@
     |-- static
 ```
 ## 项目截图
-![添加好友](http://47.107.135.64/images/%E6%B7%BB%E5%8A%A0%E5%A5%BD%E5%8F%8B.gif)
+![添加好友](http://47.107.135.64/images/%E6%B7%BB%E5%8A%A0%E5%A5%BD%E5%8F%8B2.gif)
 
-![发送消息](http://47.107.135.64/images/%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF.gif)
+![发送消息](http://47.107.135.64/images/%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF2.gif)
 
 ## 安装依赖、运行
 - 客户端
@@ -218,11 +218,11 @@ io.on('connection', (socket) => {
 cd chatServer
 npm install
 node app.js
-// server.listen at 8090
+// server listen at 8090
 ```
 ### License
 [the MIT license](https://github.com/lieqiang/vue-chat/blob/master/LICENSE)
 
 ### 最后
-如果对你有帮助，记得star一下哟^_^
+如果发现项目存在问题，欢迎提issues，如果项目对你有帮助，欢迎star。
 
