@@ -21,7 +21,7 @@
               round
               width="50"
               height="50"
-              :src="getAvatar(item.avatar)"
+              :src="getAvatar(item.senderAvatar)"
             />
           </template>
           <template #right-icon>
@@ -65,7 +65,7 @@ export default {
   name: 'NewFriends',
   sockets: {
     receiveAgreedSuccess(params) {
-      this.$store.dispatch('addToaddressBooksList', params) // 需优化
+      this.$store.dispatch('addToaddressBooksList', params)
       Toast('添加成功')
       this.$router.push({
         path: '/friendDetail',

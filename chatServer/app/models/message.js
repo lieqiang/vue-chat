@@ -2,26 +2,26 @@ const db = require('@core/db')
 
 const { Schema } = db
 const messagesSchema = new Schema({
+  userid: String,
   senderName: String, // 用户登录名
   senderNickname: String, // 用户昵称
   senderSignature: String, // 个性签名
-  userid: String,
+  senderAvatar: String,
   senderID: {
     type : db.Schema.ObjectId,
     ref : 'users'
   },
-  avatar: String,
   time: Number,
   message: String,
   read: Array,
   groupId: String, // 加入群聊id
   groupName: String, // 加入群聊名称
-  // groupPhoto: String, // 加入群聊头像
   roomid: String,
   receiverID: String, // 好友id
   receiverName: String, // 好友用户名
   receiverNickname: String,
   receiverSystemRoomID: String, // 系统消息房间
+  receiverAvatar: String,
   state: String, // group / friend
   type: String, // validate / info
   msgType: String,
@@ -41,7 +41,10 @@ class Message {
       return await messages.find({ receiverSystemRoomID: roomid })
       .sort({ 'time': -1 })
       .skip(0)
-      .limit(100)
+      .limit(100).populate({
+        path: 'senderID',
+        select: 'name signature avatar nickname'
+      })
     } catch(err) {
       console.log(err)
     }
@@ -61,7 +64,7 @@ class Message {
       .skip(0)
       .limit(100).populate({
         path: 'senderID',
-        select: 'signature avatar nickname'
+        select: 'name signature avatar nickname'
       })
     } catch(err) {
       console.log(err)

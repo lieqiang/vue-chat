@@ -51,24 +51,25 @@ export default {
   methods: {
     async sendValidation() {
       const params = {
+        roomid: this.userInfo.id + '-' + this.friendInfo._id,
         senderID: this.userInfo.id,
         senderName: this.userInfo.name,
         senderNickname: this.userInfo.nickname,
         senderSignature: this.userInfo.signature,
-        avatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
-        time: new Date().getTime(),
-        read: [],
+        senderAvatar: this.userInfo.avatar.replace(new RegExp(this.root, 'g'), ''),
         receiverID: this.friendInfo._id,
         vchatID: this.VchatInfo.id,
         receiverName: this.friendInfo.name,
         receiverNickname: this.friendInfo.nickname,
-        roomid: this.userInfo.id + '-' + this.friendInfo._id,
         receiverSystemRoomID: this.friendInfo._id + '-' + this.VchatInfo.id,
+        receiverAvatar: this.friendInfo.avatar,
+        read: [],
         state: 'friendInfo',
         type: 'validate',
         status: '0',
         validationMessage: this.validationMessage,
-        remarks: this.remarks
+        remarks: this.remarks,
+        time: new Date().getTime()
       }
       this.$socket.emit('sendVerificationMessage', params, this.VchatInfo.roomid)
       this.validationMessage && localStorage.setItem('validationMessage', this.validationMessage)

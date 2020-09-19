@@ -12,7 +12,7 @@
             round
             width="50"
             height="50"
-            :src="friendInfo.src"
+            :src="getAvatar(friendInfo.avatar)"
           />
         </template>
         <template #right-icon>
@@ -32,6 +32,7 @@
 </template>
 <script>
 import Vue from 'vue'
+import { mapGetters } from 'vuex'
 import { NavBar, Icon, Button, Cell, CellGroup, Image as VanImage, Toast } from 'vant'
 Vue.use(NavBar).use(Icon).use(Button).use(Cell).use(CellGroup).use(VanImage).use(Toast)
 
@@ -46,15 +47,26 @@ export default {
         province: '',
         city: '',
         town: '',
-        src: '',
+        avatar: '',
         signature: ''
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'root'
+    ])
   },
   created() {
     this.friendInfo = this.$route.query
   },
   methods: {
+    getAvatar(avatar) {
+      if (avatar) {
+        return `${this.root}${avatar}`
+      }
+      return require('@/assets/default.jpg')
+    },
     addToAddressBooks() {
       this.$router.push({
         path: '/sendValidate',

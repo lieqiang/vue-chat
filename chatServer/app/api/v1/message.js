@@ -7,18 +7,29 @@ const router = new Router({
 
 router.get('getNewFriendsMsg', async (ctx) => {
   const roomid = ctx.request.query.roomid
-  console.log('roomId', roomid)
   const message = new Message()
   const res = await message.getSystemMessages(roomid)
+  let data = []
+  for (let i = 0; i < res.length; i++) {
+    const msgItem = JSON.parse(JSON.stringify(res[i]))
+    delete res[i].senderID
+    const systemMsg = {
+      name: msgItem.senderID.name,
+      senderID: msgItem.senderID._id,
+      nickname: msgItem.senderID.name,
+      senderAvatar: msgItem.senderID.avatar,
+      signature: msgItem.senderID.signature
+    }
+    data.push(Object.assign(res[i], systemMsg))
+  }
   ctx.body = {
     error_code: 0,
-    data: res
+    data: data
   }
 })
 
 router.get('getHistoryMsg', async (ctx) => {
   const roomid = ctx.request.query.roomid
-  console.log('roomId', roomid)
   const message = new Message()
   const res = await message.getHistoryMsg(roomid)
   ctx.body = {
